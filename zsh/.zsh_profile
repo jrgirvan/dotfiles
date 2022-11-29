@@ -1,0 +1,27 @@
+export XDG_CONFIG_HOME=$HOME/.config
+VIM="nvim"
+
+PERSONAL=$XDG_CONFIG_HOME/personal
+source $PERSONAL/env
+for i in $(find -L $PERSONAL); do
+    source $i
+done
+source /usr/local/opt/fzf/shell/key-bindings.zsh
+source /usr/local/opt/fzf/shell/completion.zsh
+
+source $XDG_CONFIG_HOME/xero/aws-doctor.plugin.zsh
+source $XDG_CONFIG_HOME/xero/aws.plugin.zsh
+
+export GIT_EDITOR=$VIM
+export PYENV_ROOT="$HOME/.pyenv"
+export NVM_DIR="$HOME/.nvm"
+
+addToPathFront $HOME/.local/bin
+addToPathFront $HOME/go/bin
+addToPathFront $PYENV_ROOT/bin
+addToPathFront $HOME/.local/scripts
+
+eval "$(pyenv init --path)"
+
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
