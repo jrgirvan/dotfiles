@@ -1,4 +1,4 @@
-vim.g.jrgirvan_colorscheme = "rose-pine"
+vim.g.jrgirvan_colorscheme = "tokyonight"
 
 require("catppuccin").setup({
 	transparent_background = false,

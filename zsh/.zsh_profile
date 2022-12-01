@@ -16,12 +16,21 @@ export GIT_EDITOR=$VIM
 export PYENV_ROOT="$HOME/.pyenv"
 export NVM_DIR="$HOME/.nvm"
 
+export HISTFILESIZE=1000000000
+export HISTSIZE=1000000000
+export HISTFILE=~/.zsh_history
+setopt INC_APPEND_HISTORY
+export HISTTIMEFORMAT="[%F %T] "
+setopt EXTENDED_HISTORY
+
 addToPathFront $HOME/.local/bin
 addToPathFront $HOME/go/bin
 addToPathFront $PYENV_ROOT/bin
 addToPathFront $HOME/.local/scripts
 
-eval "$(pyenv init --path)"
+command -v pyenv >/dev/null || addToPathFront $PYENV_ROOT/bin
+eval "$(pyenv init -)"
+
 
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion

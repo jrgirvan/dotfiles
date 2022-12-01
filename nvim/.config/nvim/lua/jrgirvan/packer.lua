@@ -2,7 +2,6 @@ return require("packer").startup(function(use)
     use("wbthomason/packer.nvim")
 
     -- Simple plugins can be specified as strings
-    use("TimUntersberger/neogit")
     use("tpope/vim-fugitive")
 
     -- TJ created lodash of neovim
