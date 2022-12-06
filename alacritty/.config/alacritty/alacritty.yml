@@ -30,7 +30,7 @@ window:
   dimensions:
     columns: 100
     lines: 26
-  decorations: buttonless
+#  decorations: 
     # decorations: full, none, transparent, buttonless
 
   startup_mode: Windowed
