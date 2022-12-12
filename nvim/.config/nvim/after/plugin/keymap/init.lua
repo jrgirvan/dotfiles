@@ -46,8 +46,10 @@ nnoremap("<leader>f", function()
     vim.lsp.buf.format()
 end)
 
-nnoremap("<C-,>", "<cmd>cnext<CR>zz")
-nnoremap("<C-.>", "<cmd>cprev<CR>zz")
+--nnoremap("<C-,>", "<cmd>cnext<CR>zz")
+--nnoremap("<C-.>", "<cmd>cprev<CR>zz")
+nnoremap("]q", "<cmd>cnext<CR>zz")
+nnoremap("[q", "<cmd>cprev<CR>zz")
 nnoremap("<leader>k", "<cmd>lnext<CR>zz")
 nnoremap("<leader>j", "<cmd>lprev<CR>zz")
 
