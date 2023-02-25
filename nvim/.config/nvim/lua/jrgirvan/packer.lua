@@ -23,6 +23,7 @@ return require("packer").startup(function(use)
     use('tpope/vim-fugitive')
     use {
         'VonHeikemen/lsp-zero.nvim',
+        branch = 'v1.x',
         requires = {
             -- LSP Support
             {'neovim/nvim-lspconfig'},
@@ -43,6 +44,7 @@ return require("packer").startup(function(use)
         }
     }
 
+    use("simrat39/rust-tools.nvim")
     use("folke/zen-mode.nvim")
     use("github/copilot.vim")
 

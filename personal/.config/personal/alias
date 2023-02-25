@@ -2,4 +2,3 @@
 
 alias vim="$VIM"
 alias work="cd ~/work"
-

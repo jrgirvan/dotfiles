@@ -1,7 +1,7 @@
 local dap = require("dap")
 local dapui = require("dapui")
 local daptext = require("nvim-dap-virtual-text")
-
+dap.set_log_level('TRACE')
 daptext.setup()
 dapui.setup()
 --{
