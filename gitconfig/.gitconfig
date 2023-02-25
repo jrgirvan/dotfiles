@@ -1,0 +1,56 @@
+[pull]
+rebase = true
+[push]
+default = current
+[rebase]
+autoStash = true
+autosquash = true
+
+[fetch]
+prune = true
+
+[alias]
+lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'
+lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'
+lg = !"git lg1"
+lgall = !"git lg1 --all"
+pfetch = fetch --prune
+fpull = pull --ff-only
+
+[core]
+autocrlf = false
+pager = less -F -X
+editor = nvim
+[diff]
+tool = nvimdiff
+[difftool "nvimdiff"]
+cmd = "nvim -d \"$LOACL\" \"REMOTE\""
+[difftool "vscode"]
+cmd = code --wait --diff $LOCAL $REMOTE
+[diff "jupyternotebook"]
+command = git-nbdiffdriver diff
+[merge "jupyternotebook"]
+driver = git-nbmergedriver merge %O %A %B %L %P
+name = jupyter notebook merge driver
+[difftool "nbdime"]
+cmd = git-nbdifftool diff \"$LOCAL\" \"$REMOTE\" \"$BASE\"
+[difftool]
+prompt = true
+[mergetool "nbdime"]
+cmd = git-nbmergetool merge \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+[mergetool]
+prompt = false
+tool = nvimdiff
+[mergetool "vscode"]
+cmd = code --wait $MERGED
+#[mergetool "nvimdiff"]
+#cmd = nvim $MERGED
+[merge]
+tool = nvimdiff
+conflictstyle = diff3
+[user]
+	name = john.girvan
+	email = john.girvan@xero.com
+
+[init]
+defaultBranch = main
