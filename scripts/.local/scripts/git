@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# This script wraps git, so install it somewhere such as ~/bin where
+# it will be found by your shell before the actual git executable.
+
+set -e
+shopt -s extglob
+function setGitSshCommand {
+    origin=$(git config --get remote.origin.url)
+    case $origin in
+    git@github.com:xero* | git@github.dev.xero.com* | git@github.com:john-girvan_xero* )
+    #git@github.com:xero* )
+        sshKeyFile=~/.ssh/id_ed25519_john-girvan_xero
+        ;;
+    *)
+        sshKeyFile=~/.ssh/id_ed25519_jrgirvan
+        ;;
+    esac
+
+    GIT_SSH_COMMAND='ssh -i ${sshKeyFile} -o IdentitiesOnly=yes'
+}
+
+setGitSshCommand
+
+GIT_SSH_COMMAND="ssh -i $sshKeyFile -o IdentitiesOnly=yes" git "$@"

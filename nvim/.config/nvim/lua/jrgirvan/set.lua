@@ -38,3 +38,9 @@ vim.opt.updatetime = 50
 
 vim.opt.colorcolumn = "120"
 
+
+vim.api.nvim_create_autocmd('BufEnter', {
+    pattern = {'*.md'},
+    group = group,
+    command = 'setlocal wrap'
+})

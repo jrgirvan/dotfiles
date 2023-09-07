@@ -67,5 +67,7 @@ return require("packer").startup(function(use)
     use("mfussenegger/nvim-dap-python")
     use('nvim-lualine/lualine.nvim')
 
+    use('gpanders/editorconfig.nvim')
+    use('scheisa/relpointers.nvim')
 end)
 

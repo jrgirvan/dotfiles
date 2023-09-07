@@ -28,7 +28,7 @@ end
 
 vim.g.dotnet_get_dll_path = function()
     local request = function()
-        return vim.fn.input('Path to dll ', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+        return vim.fn.input('Path to dll ', vim.fn.getcwd() .. '/bin/Debug/net6.0', 'file')
     end
 
     if vim.g['dotnet_last_dll_path'] == nil then
@@ -53,6 +53,7 @@ local config = {
         end
         return vim.g.dotnet_get_dll_path()
     end,
+    stopAtEntry = true,
   },
 }
 

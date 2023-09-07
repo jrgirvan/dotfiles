@@ -28,6 +28,8 @@ addToPathFront $HOME/.local/bin
 addToPathFront $HOME/go/bin
 addToPathFront $PYENV_ROOT/bin
 addToPathFront $HOME/.local/scripts
+addToPathFront $HOME/.dotnet
+addToPathFront $HOME/.dotnet/tools
 
 command -v pyenv >/dev/null || addToPathFront $PYENV_ROOT/bin
 eval "$(pyenv init -)"
