@@ -114,8 +114,4 @@ source $ZSH/oh-my-zsh.sh
 source ~/.zsh_profile
 
 eval "$(direnv hook zsh)"
-
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/john.girvan/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
-export PATH="/usr/local/opt/curl/bin:$PATH"
+alias luamake=/home/johngirvan/personal/sumneko/3rd/luamake/luamake

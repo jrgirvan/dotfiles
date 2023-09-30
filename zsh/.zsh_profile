@@ -6,14 +6,14 @@ source $PERSONAL/env
 for i in $(find -L $PERSONAL); do
     source $i
 done
-source /usr/local/opt/fzf/shell/key-bindings.zsh
-source /usr/local/opt/fzf/shell/completion.zsh
+source /usr/share/doc/fzf/examples/key-bindings.zsh
+source /usr/share/doc/fzf/examples/completion.zsh
 
-source $XDG_CONFIG_HOME/xero/aws-doctor.plugin.zsh
-source $XDG_CONFIG_HOME/xero/aws.plugin.zsh
+#source $XDG_CONFIG_HOME/xero/aws-doctor.plugin.zsh
+#source $XDG_CONFIG_HOME/xero/aws.plugin.zsh
 
 export GIT_EDITOR=$VIM
-export PYENV_ROOT="$HOME/.pyenv"
+#export PYENV_ROOT="$HOME/.pyenv"
 #export NVM_DIR="$HOME/.nvm"
 
 export HISTFILESIZE=1000000000
@@ -23,6 +23,8 @@ setopt INC_APPEND_HISTORY
 export HISTTIMEFORMAT="[%F %T] "
 setopt EXTENDED_HISTORY
 
+addToPathFront /usr/local/go/bin
+
 addToPathFront $HOME/.local/.npm-global/bin
 addToPathFront $HOME/.local/bin
 addToPathFront $HOME/go/bin
@@ -30,9 +32,10 @@ addToPathFront $PYENV_ROOT/bin
 addToPathFront $HOME/.local/scripts
 addToPathFront $HOME/.dotnet
 addToPathFront $HOME/.dotnet/tools
+addToPathFront $HOME/.cargo/bin
 
-command -v pyenv >/dev/null || addToPathFront $PYENV_ROOT/bin
-eval "$(pyenv init -)"
+#command -v pyenv >/dev/null || addToPathFront $PYENV_ROOT/bin
+#eval "$(pyenv init -)"
 
 
 #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
