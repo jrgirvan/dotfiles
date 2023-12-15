@@ -1,0 +1,16 @@
+--require("relpointers").setup({
+--    amount = 2,
+--    distance = 10,
+--
+--    hl_properties = { link = "Visual" },
+--
+--    pointer_style = "line region",
+--
+--    white_space_rendering = "\t\t\t\t\t",
+--
+--    virtual_pointer_position = -4,
+--    virtual_pointer_text = "@",
+--
+--    enable_autocmd = true,
+--    autocmd_pattern = "*",
+--})
