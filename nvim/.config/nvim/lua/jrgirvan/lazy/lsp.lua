@@ -1,7 +1,3 @@
-local function attach (opts)
-
-end
-
 return {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -18,6 +14,21 @@ return {
     },
 
     config = function()
+        vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+            vim.lsp.handlers.hover,
+            { border = 'rounded' }
+        )
+
+        vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
+            vim.lsp.handlers.signature_help,
+            { border = 'rounded' }
+        )
+
+        vim.diagnostic.config({
+            float = {
+                border = 'rounded',
+            },
+        })
         require("fidget").setup({})
         require("mason").setup({})
         require("mason-lspconfig").setup({
@@ -31,10 +42,11 @@ return {
                 "golangci_lint_ls"
             },
             handlers = {
-                function (server_name)
-                    require("lspconfig")[server_name].setup({})
+                function(server_name)
+                    require("lspconfig")[server_name].setup({
+                    })
                 end,
-                ["lua_ls"] = function ()
+                ["lua_ls"] = function()
                     local lspconfig = require("lspconfig")
                     lspconfig.lua_ls.setup {
                         settings = {
@@ -66,8 +78,8 @@ return {
                 end,
             },
             window = {
-                -- completion = cmp.config.window.bordered(),
-                -- documentation = cmp.config.window.bordered(),
+                completion = cmp.config.window.bordered(),
+                documentation = cmp.config.window.bordered(),
             },
             mapping = cmp.mapping.preset.insert({
                 ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
@@ -80,24 +92,24 @@ return {
                 ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
             }),
             sources = cmp.config.sources({
+                -- Copilot Source
+                --{ name = "copilot", group_index = 2 },
+                -- Other Sources
                 { name = 'nvim_lsp' },
                 { name = 'luasnip' }, -- For luasnip users.
             }, {
-                    { name = 'buffer' },
-                })
+                { name = 'buffer' },
+            })
         })
         vim.diagnostic.config({
             update_in_insert = true,
             virtual_text = true,
             float = {
-                source = "always",
-                focusable = true,
-                style = "minimal",
-                border = "rounded",
-                header = "",
-                prefix = ""
-            }
+                show_header = true,
+                source = 'if_many',
+                border = 'rounded',
+                focusable = false,
+            },
         })
-
     end
 }

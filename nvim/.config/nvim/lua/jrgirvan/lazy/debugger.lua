@@ -6,6 +6,7 @@ return {
         "nvim-telescope/telescope-dap.nvim",
         "mfussenegger/nvim-dap-python",
         "leoluz/nvim-dap-go",
+        "nvim-neotest/nvim-nio",
     },
     config = function()
         local dap = require("dap")
@@ -13,14 +14,36 @@ return {
         local daptext = require("nvim-dap-virtual-text")
         dap.set_log_level('TRACE')
         daptext.setup()
-        dapui.setup()
-        dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.setup(
+            {
+                layouts = { {
+                    elements = { {
+                        id = "scopes",
+                        size = 0.25
+                    } },
+                    position = "left",
+                    size = 40
+                }, {
+                    elements = { {
+                        id = "repl",
+                        size = 0.5
+                    } },
+                    position = "bottom",
+                    size = 10
+                } },
+
+            }
+        )
+        dap.listeners.before.attach.dapui_config = function()
             dapui.open()
         end
-        dap.listeners.before.event_terminated["dapui_config"] = function()
+        dap.listeners.before.launch.dapui_config = function()
+            dapui.open()
+        end
+        dap.listeners.before.event_terminated.dapui_config = function()
             dapui.close()
         end
-        dap.listeners.before.event_exited["dapui_config"] = function()
+        dap.listeners.before.event_exited.dapui_config = function()
             dapui.close()
         end
 
@@ -48,27 +71,27 @@ return {
             dap.step_out()
         end)
 
-        vim.keymap.set("n", "<Leader>dk", function()
+        vim.keymap.set("n", "<leader>dk", function()
             dap.up()
         end)
 
-        vim.keymap.set("n", "<Leader>dj", function()
+        vim.keymap.set("n", "<leader>dj", function()
             dap.down()
         end)
 
-        vim.keymap.set("n", "<Leader>dr", function()
+        vim.keymap.set("n", "<leader>dr", function()
             dap.repl.open({}, 'split')
         end)
 
-        vim.keymap.set("n", "<Leader>di", function()
+        vim.keymap.set("n", "<leader>di", function()
             require("dap.ui.widgets").hover()
         end)
 
-        vim.keymap.set("v", "<Leader>di", function()
+        vim.keymap.set("v", "<leader>di", function()
             dap.ui.variables.visual_hover()
         end)
 
-        vim.keymap.set("n", "<Leader>d?", function()
+        vim.keymap.set("n", "<leader>d?", function()
             local widgets = require("dap.ui.widgets")
             widgets.centered_float(widgets.scopes)
         end)
@@ -79,10 +102,10 @@ return {
         vim.keymap.set("n", '<leader>dc', ':Telescope dap commands<CR>')
         vim.keymap.set("n", '<leader>db', ':Telescope dap list_breakpoints<CR>')
 
-        vim.keymap.set("n", "<Leader>b", function()
+        vim.keymap.set("n", "<leader>b", function()
             dap.toggle_breakpoint()
         end)
-        vim.keymap.set("n", "<Leader>B", function()
+        vim.keymap.set("n", "<leader>B", function()
             dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
         end)
         vim.keymap.set("n", "<leader>rc", function()
