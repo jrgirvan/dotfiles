@@ -23,7 +23,7 @@ vim.keymap.set({"n", "v"}, "<leader>d", [["_d]])
 -- This is going to get me cancelled
 vim.keymap.set("i", "<C-c>", "<Esc>")
 
-vim.keymap.set("n", "Q", "<nop>")
+--vim.keymap.set("n", "Q", "<nop>")
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 
@@ -37,3 +37,9 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 vim.keymap.set("n", "<leader>nc", "]c")
 vim.keymap.set("n", "<leader>mc", "[c")
+
+--vim.keymap.set("n", "<C-h>", ":wincmd h<CR>")
+--vim.keymap.set("n", "<C-j>", ":wincmd j<CR>")
+--vim.keymap.set("n", "<C-k>", ":wincmd k<CR>")
+--vim.keymap.set("n", "<C-l>", ":wincmd l<CR>")
+

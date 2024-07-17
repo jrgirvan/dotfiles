@@ -1,4 +1,4 @@
-return {
+local _ = {
     --"github/copilot.vim",
     "zbirenbaum/copilot.lua",
     dependencies = {
@@ -37,3 +37,4 @@ return {
         end
     end
 }
+return {}
