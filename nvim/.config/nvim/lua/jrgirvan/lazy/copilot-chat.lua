@@ -18,6 +18,7 @@ local prompts = {
   Wording = "Please improve the grammar and wording of the following text.",
   Concise = "Please rewrite the following text to make it more concise.",
 }
+
 return {
   { import = "jrgirvan.lazy.copilot" }, -- Or use { import = "lazyvim.plugins.extras.coding.copilot" },
   {
