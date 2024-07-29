@@ -2,57 +2,38 @@ export XDG_CONFIG_HOME=$HOME/.config
 VIM="nvim"
 
 PERSONAL=$XDG_CONFIG_HOME/personal
-source $PERSONAL/env
 for i in $(find -L $PERSONAL); do
     source $i
 done
-source /usr/share/doc/fzf/examples/key-bindings.zsh
-source /usr/share/doc/fzf/examples/completion.zsh
 
-source $XDG_CONFIG_HOME/xero/aws-doctor.plugin.zsh
-source $XDG_CONFIG_HOME/xero/aws.plugin.zsh
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
 
 export GIT_EDITOR=$VIM
-#export PYENV_ROOT="$HOME/.pyenv"
-#export NVM_DIR="$HOME/.nvm"
-export HOMEBREW_NO_AUTO_UPDATE=1
-
-export HISTFILESIZE=1000000000
-export HISTSIZE=1000000000
-export HISTFILE=~/.zsh_history
-setopt INC_APPEND_HISTORY
-export HISTTIMEFORMAT="[%F %T] "
-setopt EXTENDED_HISTORY
 
 addToPathFront /usr/local/go/bin
 
+if [ -z "$PYENV_ROOT" ]; then
+else
+    command -v pyenv >/dev/null || addToPathFront $PYENV_ROOT/bin
+    eval "$(pyenv init -)"
+fi
+
 addToPathFront $HOME/.local/.npm-global/bin
 addToPathFront $HOME/.local/bin
-addToPathFront $HOME/go/bin
-addToPathFront $PYENV_ROOT/bin
 addToPathFront $HOME/.local/scripts
-addToPathFront $HOME/.dotnet
-addToPathFront $HOME/.dotnet/tools
+
 addToPathFront $HOME/.cargo/bin
-
-command -v pyenv >/dev/null || addToPathFront $PYENV_ROOT/bin
-eval "$(pyenv init -)"
-
-addToPathFront $HOME/.local/.npm-global/bin
-addToPathFront $PYENV_ROOT/bin
-addToPathFront $HOME/.dotnet
-addToPathFront $HOME/.dotnet/tools
 addToPathFront $HOME/go/bin
-addToPathFront $HOME/.local/bin
-addToPathFront $HOME/.local/scripts
 
 addToPathFront "/usr/local/opt/curl/bin"
 
-addToPathFront $HOME/.docker/bin
-
-#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-
-export HF_HOME=$HOME/.config/huggingface
-
 source ~/.config/kubebuilder/completion.zsh
+
+export HOMEBREW_NO_AUTO_UPDATE=1
+
+if [ -d $XDG_CONFIG_HOME/zshrc.d ]; then
+    for i in $(find -L $XDG_CONFIG_HOME/zshrc.d); do
+        source $i
+    done
+fi
