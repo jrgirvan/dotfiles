@@ -3,7 +3,7 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(find ~ ~/projects ~/work ~/work/slim ~/personal ~/go/src/github.dev.xero.com/john-girvan ~/go/src/github.com/xero-internal-actions-poc -mindepth 1 -maxdepth 2 -type d | uniq | uniq | fzf)
+    selected=$(find ~ ~/projects ~/work ~/personal ~/go/src/github.dev.xero.com/john-girvan ~/go/src/github.com/xero-internal-actions-poc -mindepth 1 -maxdepth 2 -type d | uniq | uniq | fzf)
 fi
 
 if [[ -z $selected ]]; then
