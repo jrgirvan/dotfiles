@@ -29,17 +29,27 @@ autocmd('TextYankPost', {
 })
 
 
-autocmd({"BufWritePre"}, {
+autocmd({ "BufWritePre" }, {
     group = JRGirvanGroup,
     pattern = "*",
     command = [[%s/\s\+$//e]],
 })
 
-autocmd({"LspAttach"}, {
+autocmd({ "LspAttach" }, {
     group = JRGirvanGroup,
     callback = function(e)
         local opts = { buffer = e.buf }
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+        if vim.bo.filetype == "cs" then
+            vim.keymap.set("n", "gd", "<cmd>lua require('omnisharp_extended').lsp_definition()<cr>", opts)
+            vim.keymap.set("n", "gt", "<cmd>lua require('omnisharp_extended').lsp_type_definition()<cr>", opts)
+            vim.keymap.set("n", "gr", "<cmd>lua require('omnisharp_extended').lsp_references()<cr>", opts)
+            vim.keymap.set("n", "gi", "<cmd>lua require('omnisharp_extended').lsp_implementation()<cr>", opts)
+        else
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+            vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
+            vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+            vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+        end
         vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
         vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
         vim.keymap.set("n", "<leader>vd", vim.diagnostic.open_float, opts)
@@ -49,7 +59,6 @@ autocmd({"LspAttach"}, {
         vim.keymap.set("n", "<leader>vrr", vim.lsp.buf.references, opts)
         vim.keymap.set("n", "<leader>vrn", vim.lsp.buf.rename, opts)
         vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
-
     end
 })
 vim.g.netrw_browse_split = 0

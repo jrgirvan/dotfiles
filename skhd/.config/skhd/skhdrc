@@ -1,8 +1,8 @@
 # change focus
-alt - h : yabai -m window --focus west
-alt - j : yabai -m window --focus south
-alt - k : yabai -m window --focus north
-alt - l : yabai -m window --focus east
+alt + ctrl - h : yabai -m window --focus west
+alt + ctrl - j : yabai -m window --focus south
+alt + ctrl - k : yabai -m window --focus north
+alt + ctrl - l : yabai -m window --focus east
 # (alt) change focus (using arrow keys)
 #alt - left  : yabai -m window --focus west
 #alt - down  : yabai -m window --focus south
@@ -20,15 +20,15 @@ alt + shift - l : yabai -m window --swap east || $(yabai -m window --display eas
 #alt + shift - right : yabai -m window --swap east || $(yabai -m window --display east; yabai -m display --focus east)
 
 # set insertion point in focused container
-alt + ctrl - h : yabai -m window --insert west
-alt + ctrl - j : yabai -m window --insert south
-alt + ctrl - k : yabai -m window --insert north
-alt + ctrl - l : yabai -m window --insert east
+#alt + ctrl - h : yabai -m window --insert west
+#alt + ctrl - j : yabai -m window --insert south
+#alt + ctrl - k : yabai -m window --insert north
+#alt + ctrl - l : yabai -m window --insert east
 # (alt) set insertion point in focused container using arrows
-#alt + ctrl - left  : yabai -m window --insert west
-#alt + ctrl - down  : yabai -m window --insert south
-#alt + ctrl - up    : yabai -m window --insert north
-#alt + ctrl - right : yabai -m window --insert east
+alt + ctrl - left  : yabai -m window --insert west
+alt + ctrl - down  : yabai -m window --insert south
+alt + ctrl - up    : yabai -m window --insert north
+alt + ctrl - right : yabai -m window --insert east
 
 # go back to previous workspace (kind of like back_and_forth in i3)
 alt - b : yabai -m space --focus recent
@@ -68,18 +68,18 @@ alt - s : yabai -m space --layout stack
 # alt - n : yabai -m window --focus stack.prev || yabai -m window --focus north
 
 # forwards
-alt - p : yabai -m query --spaces --space \
-            | jq -re ".index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.x, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
-            | xargs -I{} yabai -m window --focus {}
+#alt - p : yabai -m query --spaces --space \
+#            | jq -re ".index" \
+#            | xargs -I{} yabai -m query --windows --space {} \
+#            | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.x, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
+#            | xargs -I{} yabai -m window --focus {}
 
 # backwards
-alt - n : yabai -m query --spaces --space \
-            | jq -re ".index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
-            | xargs -I{} yabai -m window --focus {}
+#alt - n : yabai -m query --spaces --space \
+#            | jq -re ".index" \
+#            | xargs -I{} yabai -m query --windows --space {} \
+#            | jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
+#            | xargs -I{} yabai -m window --focus {}
 
 # close focused window
 alt - w : yabai -m window --close
@@ -91,7 +91,7 @@ alt - f : yabai -m window --toggle zoom-fullscreen
 alt + shift - f : yabai -m window --toggle native-fullscreen
 
 # open terminal
-alt - return : open -n /Applications/Alacritty.app
+alt + shift - return : open -n /Applications/Alacritty.app
 
 # resize window
 ctrl + cmd - h : yabai -m window --resize left:-40:0 ; yabai -m window --resize right:-40:0
