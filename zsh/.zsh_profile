@@ -10,6 +10,7 @@ done
 source <(fzf --zsh)
 
 export GIT_EDITOR=$VIM
+export KUBE_EDITOR=$VIM
 
 addToPathFront /usr/local/go/bin
 
@@ -27,6 +28,7 @@ addToPathFront $HOME/.cargo/bin
 addToPathFront $HOME/go/bin
 
 addToPathFront "/usr/local/opt/curl/bin"
+addToPathFront $HOME/.krew/bin
 
 source ~/.config/kubebuilder/completion.zsh
 
@@ -37,3 +39,5 @@ if [ -d $XDG_CONFIG_HOME/zshrc.d ]; then
         source $i
     done
 fi
+
+alias docker="podman"

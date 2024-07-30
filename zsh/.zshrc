@@ -12,4 +12,6 @@ source ~/.zsh_profile
 
 eval "$(starship init zsh)"
 
+. "$HOME/.atuin/bin/env"
 eval "$(atuin init zsh)"
+source <(kubectl completion zsh)
