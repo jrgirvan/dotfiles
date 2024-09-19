@@ -29,3 +29,26 @@ style = "Italic"
 [font.normal]
 family = "BerkeleyMono Nerd Font"
 style = "Regular"
+
+
+# Key bindings
+[[keyboard.bindings]]
+key = "Left"
+mods = "Alt"
+chars = "\u001Bb"  # Send escape sequence for Alt+Left
+
+[[keyboard.bindings]]
+key = "Right"
+mods = "Alt"
+chars = "\u001Bf"  # Send escape sequence for Alt+Right
+
+[[keyboard.bindings]]
+key = "Left"
+mods = "Command"
+chars = "\u001BOH"  # Send escape sequence for Command+Left
+
+[[keyboard.bindings]]
+key = "Right"
+mods = "Command"
+chars = "\u001BOF"  # Send escape sequence for Command+Right
+

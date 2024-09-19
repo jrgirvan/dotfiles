@@ -14,26 +14,7 @@ return {
         local daptext = require("nvim-dap-virtual-text")
         dap.set_log_level('TRACE')
         daptext.setup()
-        dapui.setup(
-            {
-                layouts = { {
-                    elements = { {
-                        id = "scopes",
-                        size = 0.25
-                    } },
-                    position = "left",
-                    size = 40
-                }, {
-                    elements = { {
-                        id = "repl",
-                        size = 0.5
-                    } },
-                    position = "bottom",
-                    size = 10
-                } },
-
-            }
-        )
+        dapui.setup()
         dap.listeners.before.attach.dapui_config = function()
             dapui.open()
         end
