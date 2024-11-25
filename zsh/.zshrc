@@ -1,5 +1,6 @@
-# Lines configured by zsh-newuser-install
-#bindkey -e
+#y Lines configured by zsh-newuser-install
+bindkey -e
+bindkey "^[[3~" delete-char
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
 zstyle :compinstall filename '$HOME/.zshrc'

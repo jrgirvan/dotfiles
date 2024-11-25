@@ -12,5 +12,5 @@ configuration{
     display-window: " 🪟  Window";
     sidebar-mode: true;
 }
-
+@import "fonts.rasi"
 @theme "catppuccin-mocha"

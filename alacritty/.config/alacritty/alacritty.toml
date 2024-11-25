@@ -12,7 +12,10 @@ program = "tmux"
 args = ["new-session", "-A", "-D", "-s", "main"]
 
 [font]
-size = 9
+size = 14
+
+[window]
+opacity = 0.9
 
 [font.bold]
 family = "BerkeleyMono Nerd Font"

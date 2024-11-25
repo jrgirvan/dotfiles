@@ -1,6 +1,9 @@
 export XDG_CONFIG_HOME=$HOME/.config
 VIM="nvim"
 
+export LESS='-R'
+alias ls='ls --color=auto'
+
 PERSONAL=$XDG_CONFIG_HOME/personal
 for i in $(find -L $PERSONAL); do
     source $i
@@ -19,7 +22,7 @@ else
     command -v pyenv >/dev/null || addToPathFront $PYENV_ROOT/bin
     eval "$(pyenv init -)"
 fi
-
+. "$HOME/.cargo/env"
 addToPathFront $HOME/.local/.npm-global/bin
 addToPathFront $HOME/.local/bin
 addToPathFront $HOME/.local/scripts
