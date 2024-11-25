@@ -1,2 +1,2 @@
-addToFront $HOME/.dotnet
-addToFront $HOME/.dotnet/tools
+addToPath $HOME/.dotnet
+addToPath $HOME/.dotnet/tools
