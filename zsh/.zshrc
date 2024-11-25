@@ -1,4 +1,4 @@
-#y Lines configured by zsh-newuser-install
+# Lines configured by zsh-newuser-install
 bindkey -e
 bindkey "^[[3~" delete-char
 # End of lines configured by zsh-newuser-install
@@ -16,3 +16,14 @@ eval "$(starship init zsh)"
 . "$HOME/.atuin/bin/env"
 eval "$(atuin init zsh)"
 source <(kubectl completion zsh)
+
+eval "$(direnv hook zsh)"
+
+# bun completions
+[ -s "/Users/john.girvan/.bun/_bun" ] && source "/Users/john.girvan/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+. "$HOME/.cargo/env"

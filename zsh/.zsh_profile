@@ -5,6 +5,7 @@ export LESS='-R'
 alias ls='ls --color=auto'
 
 PERSONAL=$XDG_CONFIG_HOME/personal
+source $PERSONAL/env
 for i in $(find -L $PERSONAL); do
     source $i
 done
@@ -17,12 +18,6 @@ export KUBE_EDITOR=$VIM
 
 addToPathFront /usr/local/go/bin
 
-if [ -z "$PYENV_ROOT" ]; then
-else
-    command -v pyenv >/dev/null || addToPathFront $PYENV_ROOT/bin
-    eval "$(pyenv init -)"
-fi
-. "$HOME/.cargo/env"
 addToPathFront $HOME/.local/.npm-global/bin
 addToPathFront $HOME/.local/bin
 addToPathFront $HOME/.local/scripts
@@ -42,5 +37,3 @@ if [ -d $XDG_CONFIG_HOME/zshrc.d ]; then
         source $i
     done
 fi
-
-alias docker="podman"
