@@ -1,5 +1,6 @@
 local constants = require("constants")
 local settings = require("config.settings")
+local sbar = require("sketchybar")
 
 local isCharging = false
 
@@ -51,7 +52,7 @@ battery:subscribe({ "routine", "power_source_change", "system_woke" }, function(
         color = settings.colors.yellow
       elseif found and charge > 20 then
         icon = settings.icons.text.battery._25
-        color = settings.colors.orange
+        color = settings.colors.maroon
       else
         icon = settings.icons.text.battery._0
         color = settings.colors.red

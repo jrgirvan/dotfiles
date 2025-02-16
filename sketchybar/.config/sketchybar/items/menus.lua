@@ -1,5 +1,6 @@
 local constants = require("constants")
 local settings = require("config.settings")
+local sbar = require("sketchybar")
 
 local maxItems <const> = 15
 local menuItems = {}
@@ -26,14 +27,14 @@ local function createPlaceholders()
           style = index == 1 and settings.fonts.styles.bold or settings.fonts.styles.regular,
         },
       },
-      click_script = "$CONFIG_DIR/bridge/menus/bin/menus -s " .. index,
+      click_script = "~/.config/sketchybar/bridge/menus/bin/menus -s " .. index,
     })
     menuItems[index] = menu
   end
 
   sbar.add("bracket", { "/" .. constants.items.MENU .. "\\..*/" }, {
     background = {
-      color = settings.colors.bg1,
+      color = settings.colors.base,
       padding_left = settings.dimens.padding.item,
       padding_right = settings.dimens.padding.item,
     },
@@ -43,7 +44,7 @@ end
 local function updateMenus()
   sbar.set("/" .. constants.items.MENU .. "\\..*/", { drawing = false })
 
-  sbar.exec("$CONFIG_DIR/bridge/menus/bin/menus -l", function(menus)
+  sbar.exec("~/.config/sketchybar/bridge/menus/bin/menus -l", function(menus)
     local index = 1
     for menu in string.gmatch(menus, '[^\r\n]+') do
       if index < maxItems then

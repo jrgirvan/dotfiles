@@ -1,4 +1,5 @@
 local constants = require("constants")
+local sbar = require("sketchybar")
 
 local calendar = sbar.add("item", constants.items.CALENDAR, {
   position = "right",

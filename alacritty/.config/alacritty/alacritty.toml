@@ -8,15 +8,15 @@ live_config_reload = true
 TERM = "xterm-256color"
 
 [shell]
-program = "tmux"
-args = ["new-session", "-A", "-D", "-s", "main"]
-
-[font]
-size = 14
+#program = "tmux"
+#args = ["new-session", "-A", "-D", "-s", "main"]
+program = "/usr/local/bin/zsh"
+args = ["--login", "-c", "tmux new-session -A -D  -s main"]
 
 [window]
+decorations = "None"
 opacity = 0.9
-option_as_alt = true
+option_as_alt = "Both"
 
 [scrolling]
 history = 100000
@@ -111,4 +111,3 @@ chars = "\u001b[27;5;57~"
 key = "Key0"
 mods = "Control"
 chars = "\u001b[27;5;48~"
-

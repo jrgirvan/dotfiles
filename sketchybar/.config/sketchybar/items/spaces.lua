@@ -1,5 +1,6 @@
 local constants = require("constants")
 local settings = require("config.settings")
+local sbar = require("sketchybar")
 
 local spaces = {}
 
@@ -13,21 +14,13 @@ local currentWorkspaceWatcher = sbar.add("item", {
   updates = true,
 })
 
--- Modify this file with Visual Studio Code - at least vim does have problems with the icons
--- copy "Icons" from the nerd fonts cheat sheet and replace icon and name accordingly below
--- https://www.nerdfonts.com/cheat-sheet
 local spaceConfigs <const> = {
-  ["1"] = { icon = "󱞁", name = "Notes" },
-  ["2"] = { icon = "", name = "Terminal" },
-  ["3"] = { icon = "󰖟", name = "Browser" },
-  ["4"] = { icon = "", name = "AltBrowser" },
-  ["5"] = { icon = "", name = "Remote" },
-  ["6"] = { icon = "", name = "Database" },
-  ["7"] = { icon = "󰊻", name = "Chat" },
-  ["8"] = { icon = "", name = "Mail" },
-  ["9"] = { icon = "", name = "Music" },
-  ["10"] = { icon = "󰌾", name = "Secrets" },
-  ["t"] = { icon = "", name = "Meeting" },
+  ["1"] = { icon = "󰒱", name = "Slack", display = 1 },
+  ["2"] = { icon = "", name = "Coding", display = 1 },
+  ["3"] = { icon = "", name = "Web", display = 1 },
+  ["4"] = { icon = "", name = "Personal Web", display = 1 },
+  ["5"] = { icon = "", name = "Obsidian", display = 1 },
+  ["6"] = { icon = "󰌢", name = "Retina", display = 2 }
 }
 
 local function selectCurrentWorkspace(focusedWorkspaceName)
@@ -35,9 +28,9 @@ local function selectCurrentWorkspace(focusedWorkspaceName)
     if item ~= nil then
       local isSelected = sid == constants.items.SPACES .. "." .. focusedWorkspaceName
       item:set({
-        icon = { color = isSelected and settings.colors.bg1 or settings.colors.white },
-        label = { color = isSelected and settings.colors.bg1 or settings.colors.white },
-        background = { color = isSelected and settings.colors.white or settings.colors.bg1 },
+        icon = { color = isSelected and settings.colors.base or settings.colors.text },
+        label = { color = isSelected and settings.colors.base or settings.colors.text },
+        background = { color = isSelected and settings.colors.peach or settings.colors.base },
       })
     end
   end
@@ -57,6 +50,7 @@ local function addWorkspaceItem(workspaceName)
   local spaceConfig = spaceConfigs[workspaceName]
 
   spaces[spaceName] = sbar.add("item", spaceName, {
+    display = spaceConfig.display,
     label = {
       width = 0,
       padding_left = 0,
@@ -64,10 +58,10 @@ local function addWorkspaceItem(workspaceName)
     },
     icon = {
       string = spaceConfig.icon or settings.icons.apps["default"],
-      color = settings.colors.white,
+      color = settings.colors.text,
     },
     background = {
-      color = settings.colors.bg1,
+      color = settings.colors.base,
     },
     click_script = "aerospace workspace " .. workspaceName,
   })
@@ -85,6 +79,7 @@ local function addWorkspaceItem(workspaceName)
   end)
 
   sbar.add("item", spaceName .. ".padding", {
+    display = spaceConfig.display,
     width = settings.dimens.padding.label
   })
 end

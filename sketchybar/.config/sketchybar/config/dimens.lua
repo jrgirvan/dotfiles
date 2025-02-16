@@ -1,20 +1,20 @@
 local padding <const> = {
   background = 8,
-  icon = 10,
+  icon = 8,
   label = 8,
-  bar = 13,
-  item = 18,
+  bar = 12,
+  item = 8,
   popup = 8,
 }
 
 local graphics <const> = {
   bar = {
-    height = 36,
+    height = 32,
     offset = 8,
   },
   background = {
     height = 24,
-    corner_radius = 9,
+    corner_radius = 8,
   },
   slider = {
     height = 20,
@@ -27,7 +27,7 @@ local graphics <const> = {
 }
 
 local text <const> = {
-  icon = 16.0,
+  icon = 14.0,
   label = 14.0,
 }
 

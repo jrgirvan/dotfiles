@@ -1,4 +1,5 @@
 local settings = require("config.settings")
+local sbar = require("sketchybar")
 
 sbar.default({
   updates = "when_shown",
@@ -8,7 +9,7 @@ sbar.default({
       style = settings.fonts.styles.regular,
       size = settings.dimens.text.icon,
     },
-    color = settings.colors.white,
+    color = settings.colors.text,
     padding_left = settings.dimens.padding.icon,
     padding_right = settings.dimens.padding.icon,
   },
@@ -18,7 +19,7 @@ sbar.default({
       style = settings.fonts.styles.regular,
       size = settings.dimens.text.label,
     },
-    color = settings.colors.white,
+    color = settings.colors.text,
     padding_left = settings.dimens.padding.label,
     padding_right = settings.dimens.padding.label,
   },
@@ -44,7 +45,7 @@ sbar.default({
     blur_radius = settings.dimens.graphics.blur_radius,
   },
   slider = {
-    highlight_color = settings.colors.orange,
+    highlight_color = settings.colors.peach,
     background = {
       height = settings.dimens.graphics.slider.height,
       corner_radius = settings.dimens.graphics.background.corner_radius,

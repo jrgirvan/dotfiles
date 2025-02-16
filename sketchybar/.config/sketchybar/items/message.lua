@@ -1,5 +1,6 @@
 local constants = require("constants")
 local settings = require("config.settings")
+local sbar = require("sketchybar")
 
 local message = sbar.add("item", constants.items.MESSAGE, {
   width = 0,

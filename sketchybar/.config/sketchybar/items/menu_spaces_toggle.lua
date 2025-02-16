@@ -1,5 +1,6 @@
 local constants = require("constants")
 local settings = require("config.settings")
+local sbar = require("sketchybar")
 
 sbar.add("event", constants.events.SWAP_MENU_AND_SPACES)
 
@@ -21,11 +22,11 @@ local function addToggle()
     },
     label = {
       width = 0,
-      color = settings.colors.bg1,
+      color = settings.colors.base,
       string = "Spaces",
     },
     background = {
-      color = settings.colors.with_alpha(settings.colors.dirty_white, 0.0),
+      color = settings.colors.with_alpha(settings.colors.subtext0, 0.0),
     }
   })
 
@@ -40,7 +41,7 @@ local function addToggle()
           color = { alpha = 1.0 },
           border_color = { alpha = 0.5 },
         },
-        icon = { color = settings.colors.bg1 },
+        icon = { color = settings.colors.base },
         label = { width = "dynamic" }
       })
     end)
@@ -53,7 +54,7 @@ local function addToggle()
           color = { alpha = 0.0 },
           border_color = { alpha = 0.0 },
         },
-        icon = { color = settings.colors.white },
+        icon = { color = settings.colors.text },
         label = { width = 0 }
       })
     end)

@@ -1,4 +1,5 @@
 local settings = require("config.settings")
+local sbar = require("sketchybar")
 
 sbar.bar({
 	topmost = "window",

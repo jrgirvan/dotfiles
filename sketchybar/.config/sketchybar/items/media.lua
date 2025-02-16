@@ -1,4 +1,5 @@
 local colors = require("config.colors")
+local sbar = require("sketchybar")
 
 local whitelist = {
   ["Psst"] = true,
@@ -33,7 +34,7 @@ local media_artist = sbar.add("item", {
   label = {
     width = 0,
     font = { size = 9 },
-    color = colors.with_alpha(colors.white, 0.6),
+    color = colors.with_alpha(colors.text, 0.6),
     max_chars = 24,
     y_offset = 6,
   },
