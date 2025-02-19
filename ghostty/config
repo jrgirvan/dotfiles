@@ -1,5 +1,5 @@
 theme = catppuccin-mocha.conf
-font-family = "BerkeleyMono Nerd Font"
+font-family = "BerkeleyMono"
 background = "#1e1e1e"
 font-size = 22
 background-blur-radius = 20
