@@ -12,10 +12,12 @@
     configuration = { pkgs, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
+      nixpkgs.config.allowUnfree = true;
       environment.systemPackages =
-        [ 
+        [
 pkgs.glow
 pkgs.direnv
+pkgs.devenv
 pkgs.neovim
 pkgs.kubectl
 pkgs.fzf
@@ -24,6 +26,19 @@ pkgs.atuin
 pkgs.starship
 pkgs.btop
 pkgs.tmux
+pkgs.go
+pkgs.devbox
+pkgs.lua5_4_compat
+pkgs.awscli2
+pkgs.aws-sso-cli
+pkgs.aws-vault
+pkgs.terraform
+pkgs.kind
+                        pkgs.docker-client
+                        pkgs.colima
+                        pkgs.docker-compose
+                        pkgs.docker-buildx
+                        pkgs.docker-credential-helpers
         ];
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
@@ -49,7 +64,7 @@ environment.etc = {
       nixpkgs.hostPlatform = "aarch64-darwin";
 
       security.pam.enableSudoTouchIdAuth = true;
-  
+
       system.defaults = {
         dock.autohide = true;
         dock.mru-spaces = false;
@@ -60,9 +75,17 @@ environment.etc = {
 
       # Homebrew needs to be installed on its own!
       homebrew.enable = true;
+      homebrew.taps = [
+                    "FelixKratz/formulae"
+                ];
       homebrew.casks = [
+                    "nikitabobko/tap/aerospace"
+                    "obsidian"
+                    "vmware-fusion"
       ];
       homebrew.brews = [
+                    "sketchybar"
+                    "borders"
       ];
  };
   in

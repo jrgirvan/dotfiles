@@ -1,5 +1,6 @@
 export XDG_CONFIG_HOME=$HOME/.config
 VIM="nvim"
+alias vim="nvim"
 
 export LESS='-R'
 alias ls='ls --color=auto'
@@ -15,6 +16,18 @@ source <(fzf --zsh)
 
 export GIT_EDITOR=$VIM
 export KUBE_EDITOR=$VIM
+
+addToPath() {
+    if [[ "$PATH" != *"$1"* ]]; then
+        export PATH=$PATH:$1
+    fi
+}
+
+addToPathFront() {
+    if [[ "$PATH" != *"$1"* ]]; then
+        export PATH=$1:$PATH
+    fi
+}
 
 addToPathFront /usr/local/go/bin
 
@@ -37,3 +50,10 @@ if [ -d $XDG_CONFIG_HOME/zshrc.d ]; then
         source $i
     done
 fi
+
+
+
+alias kubectx='kubectl-ctx'
+alias kubens='kubectl-ns'
+alias kubelogin='kubectl-oidc_login'
+alias krew='kubectl-krew'
