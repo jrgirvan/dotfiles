@@ -15,6 +15,7 @@
       nixpkgs.config.allowUnfree = true;
       environment.systemPackages =
         [
+pkgs.git
 pkgs.glow
 pkgs.direnv
 pkgs.devenv
@@ -39,12 +40,17 @@ pkgs.kind
                         pkgs.docker-compose
                         pkgs.docker-buildx
                         pkgs.docker-credential-helpers
+                        pkgs.pyenv
+           pkgs.nixpkgs-fmt
+                        pkgs.yazi
         ];
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
 
       # Enable alternative shell support in nix-darwin.
-      programs.zsh.enable = true;
+      programs.zsh = {
+        enable = true;
+      };
 environment.etc = {
     "zshenv" = {
       text = ''
@@ -63,7 +69,7 @@ environment.etc = {
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
 
-      security.pam.enableSudoTouchIdAuth = true;
+                security.pam.services.sudo_local.touchIdAuth = true;
 
       system.defaults = {
         dock.autohide = true;
@@ -86,6 +92,8 @@ environment.etc = {
       homebrew.brews = [
                     "sketchybar"
                     "borders"
+                    "ical-buddy"
+                    "watch"
       ];
  };
   in

@@ -2,6 +2,8 @@ export XDG_CONFIG_HOME=$HOME/.config
 VIM="nvim"
 alias vim="nvim"
 
+export EDITOR=$VIM
+
 export LESS='-R'
 alias ls='ls --color=auto'
 
@@ -40,6 +42,7 @@ addToPathFront $HOME/go/bin
 
 addToPathFront "/usr/local/opt/curl/bin"
 addToPathFront $HOME/.krew/bin
+addToPath $GHOSTTY_BIN_DIR
 
 source ~/.config/kubebuilder/completion.zsh
 

@@ -12,6 +12,7 @@ return {
         "saadparwaiz1/cmp_luasnip",
         "j-hui/fidget.nvim",
         "Hoffs/omnisharp-extended-lsp.nvim",
+        "mfussenegger/nvim-jdtls",
     },
 
     config = function()
@@ -39,7 +40,8 @@ return {
                 "pyright",
                 "gopls",
                 "omnisharp",
-                "golangci_lint_ls"
+                "golangci_lint_ls",
+                "jdtls"
             },
             handlers = {
                 function(server_name)
@@ -67,7 +69,6 @@ return {
                 --["omnisharp"] = attach
             }
         })
-
 
         local cmp = require("cmp")
         local cmp_select = { behavior = cmp.SelectBehavior.Select }

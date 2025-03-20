@@ -1,3 +1,5 @@
+bindkey "^[[3~" delete-char
+
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 autoload bashcompinit && bashcompinit
 autoload -Uz compinit
@@ -21,4 +23,14 @@ export NVM_DIR="$HOME/.config/nvm"
 fpath=(/Users/john.girvan/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
+# AWS CLI completions
+autoload -U +X bashcompinit && bashcompinit
+complete -C $(which aws_completer) aws
+complete -C $(which aws_completer) aws2
+complete -C $(which aws_completer) aws-sso
+
 # End of Docker CLI completions
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

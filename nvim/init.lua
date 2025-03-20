@@ -1,6 +1,7 @@
 require("config.remap")
 require("config.set")
 require("config.lazy")
+require("config.autocmds")
 --vim.lsp.set_log_level("debug")
 local augroup = vim.api.nvim_create_augroup
 local JRGirvanGroup = augroup('JRGirvan', {})
