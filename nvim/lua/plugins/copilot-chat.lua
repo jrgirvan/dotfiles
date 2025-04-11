@@ -37,7 +37,6 @@ return {
         },
     },
     {
-        dir = IS_DEV and "~/Projects/research/CopilotChat.nvim" or nil,
         "CopilotC-Nvim/CopilotChat.nvim",
         branch = "main",
         -- version = "v3.3.0", -- Use a specific version to prevent breaking changes

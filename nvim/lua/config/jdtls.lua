@@ -1,4 +1,6 @@
 local function get_jdtls()
+    -- Redirect notifications to snacks.nvim
+    vim.notify = require("snacks").notify
     -- Get the Mason Registry to gain access to downloaded binaries
     local mason_registry = require("mason-registry")
     -- Find the JDTLS package in the Mason Regsitry

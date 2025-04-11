@@ -1,5 +1,8 @@
 bindkey "^[[3~" delete-char
 
+#IGNOREEOF=10  # Shell only exits after the 10th consecutive Ctrl-d
+setopt IGNORE_EOF
+
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 autoload bashcompinit && bashcompinit
 autoload -Uz compinit

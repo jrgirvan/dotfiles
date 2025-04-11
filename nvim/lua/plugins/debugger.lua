@@ -9,8 +9,7 @@ return {
         "nvim-neotest/nvim-nio",
     },
     config = function()
-        local dap = require("dap")
-        local dapui = require("dapui")
+        local dap, dapui = require("dap"), require("dapui")
         local daptext = require("nvim-dap-virtual-text")
         dap.set_log_level('TRACE')
         daptext.setup()
@@ -28,10 +27,10 @@ return {
             dapui.close()
         end
 
-        vim.keymap.set("n", "<Home>", function()
+        vim.keymap.set("n", "<leader>dt", function()
             dapui.toggle(1)
         end)
-        vim.keymap.set("n", "<End>", function()
+        vim.keymap.set("n", "<leader>dy", function()
             dapui.toggle(2)
         end)
 
@@ -175,7 +174,7 @@ return {
             return vim.g['dotnet_last_dll_path']
         end
 
-        local config = {
+        dap.configurations.cs = {
             {
                 type = "coreclr",
                 name = "launch - netcoredbg",
@@ -190,7 +189,6 @@ return {
             },
         }
 
-        dap.configurations.cs = config
 
 
 
@@ -243,6 +241,38 @@ return {
             configuration.justmycode = false
             configuration.subprocess = true
         end
+
+        dap.adapters.java = function(callback, config)
+            callback({
+                type = "server",
+                host = "127.0.0.1", -- Adjust if the debug server runs on a different host
+                port = config.port or 5005, -- Default JDWP port
+            })
+        end
+
+        dap.configurations.java = {
+            {
+                type = "java",
+                request = "attach",
+                name = "Attach to Remote Java App",
+                hostName = "127.0.0.1", -- Change to the remote host if needed
+                port = 5005, -- Default JDWP port, adjust if necessary
+            },
+            {
+                type = "java",
+                request = "launch",
+                name = "Run Java Application",
+                mainClass = function()
+                    return vim.fn.input("Main class to run: ")
+                end,
+                projectName = function()
+                    return vim.fn.input("Project name (optional): ", "", "file")
+                end,
+                args = function()
+                    return vim.split(vim.fn.input("Program arguments (space-separated): "), " ")
+                end,
+            },
+        }
     end
 
 }

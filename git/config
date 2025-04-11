@@ -29,18 +29,17 @@
     tool = nvimdiff
 
 [difftool "nvimdiff"]
-    cmd = "nvim -d \"$LOACL\" \"REMOTE\""
+    cmd = nvim -d "$LOCAL" "REMOTE"
 
 [difftool]
-    prompt = true
-
-[mergetool]
     prompt = false
-    tool = nvimdiff
+
+[mergetool "fugitive"]
+    cmd = nvim -f -c 'Gdiffsplit!' "$MERGED"
+    trustExitCode = true
 
 [merge]
-    tool = nvimdiff
-    conflictstyle = diff3
+    tool = fugitive
 
 [user]
         name = John Girvan

@@ -16,6 +16,9 @@ return {
     },
 
     config = function()
+        -- Redirect notifications to snacks.nvim
+        --vim.notify = require("snacks").notify
+
         vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
             vim.lsp.handlers.hover,
             { border = 'rounded' }
@@ -41,7 +44,8 @@ return {
                 "gopls",
                 "omnisharp",
                 "golangci_lint_ls",
-                "jdtls"
+                "jdtls",
+                "ts_ls"
             },
             handlers = {
                 function(server_name)
