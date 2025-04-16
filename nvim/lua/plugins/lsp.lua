@@ -19,6 +19,14 @@ return {
         -- Redirect notifications to snacks.nvim
         --vim.notify = require("snacks").notify
 
+        --Enable (broadcasting) snippet capability for completion
+        local capabilities = vim.lsp.protocol.make_client_capabilities()
+        capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+        vim.lsp.config('html', {
+            capabilities = capabilities,
+        })
+
         vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
             vim.lsp.handlers.hover,
             { border = 'rounded' }
@@ -45,7 +53,8 @@ return {
                 "omnisharp",
                 "golangci_lint_ls",
                 "jdtls",
-                "ts_ls"
+                "ts_ls",
+                "html"
             },
             handlers = {
                 function(server_name)

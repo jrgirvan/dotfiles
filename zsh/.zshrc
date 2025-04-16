@@ -14,7 +14,7 @@ source ~/.config/zsh/zsh_profile
 
 export NIX_CONF_DIR=$HOME/.config/nix
 
-export XDG_CONFIG_HOME="/Users/john.girvan/.config"
+export XDG_CONFIG_HOME="$HOME/.config"
 
 
 eval "$(starship init zsh)"

@@ -43,6 +43,8 @@ addToPathFront $HOME/go/bin
 addToPathFront "/usr/local/opt/curl/bin"
 addToPathFront $HOME/.krew/bin
 addToPath $GHOSTTY_BIN_DIR
+export BUN_INSTALL="$HOME/.bun"
+addToPathFront "$BUN_INSTALL/bin"
 
 source ~/.config/kubebuilder/completion.zsh
 
@@ -54,7 +56,7 @@ if [ -d $XDG_CONFIG_HOME/zshrc.d ]; then
     done
 fi
 
-
+source /usr/share/nvm/init-nvm.sh
 
 alias kubectx='kubectl-ctx'
 alias kubens='kubectl-ns'

@@ -20,7 +20,7 @@
     fpull = pull --ff-only
 
 [core]
-    sshCommand = ssh -i ~/.ssh/id_ed25519_jrgirvan
+    sshCommand = ssh -i ~/.ssh/id_ed25519
     autocrlf = false
     pager = less -F -X
     editor = nvim
