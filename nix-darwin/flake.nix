@@ -16,6 +16,7 @@
         environment.systemPackages =
           [
             pkgs.git
+            pkgs.wget
             pkgs.glow
             pkgs.nixpkgs-fmt
             pkgs.direnv
@@ -34,6 +35,7 @@
             pkgs.awscli2
             pkgs.aws-sso-cli
             pkgs.aws-vault
+            pkgs.amazon-ssm-agent
             pkgs.terraform
             pkgs.kind
             pkgs.k9s
@@ -87,11 +89,13 @@
         homebrew.enable = true;
         homebrew.taps = [
           "FelixKratz/formulae"
+          "omnisharp/omnisharp-roslyn"
         ];
         homebrew.casks = [
           "nikitabobko/tap/aerospace"
           "obsidian"
           "vmware-fusion"
+          "visual-studio-code"
         ];
         homebrew.brews = [
           "sketchybar"
@@ -99,6 +103,7 @@
           "ical-buddy"
           "watch"
           "kafka"
+          "omnisharp-mono"
         ];
       };
     in

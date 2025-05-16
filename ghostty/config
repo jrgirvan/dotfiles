@@ -22,3 +22,5 @@ keybind=ctrl+8=text:\x01\x38
 keybind=ctrl+9=text:\x01\x39
 keybind=ctrl+0=text:\x01\x30
 
+keybind=home=text:\x1b[7~
+keybind=end=text:\x1b[8~

@@ -27,10 +27,10 @@ return {
             dapui.close()
         end
 
-        vim.keymap.set("n", "<leader>dt", function()
+        vim.keymap.set("n", "<Home>", function()
             dapui.toggle(1)
         end)
-        vim.keymap.set("n", "<leader>dy", function()
+        vim.keymap.set("n", "<End>", function()
             dapui.toggle(2)
         end)
 
