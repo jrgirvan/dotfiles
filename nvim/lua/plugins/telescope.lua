@@ -25,12 +25,6 @@ return {
         --    builtin.buffers()
         --end)
 
-        require("telescope").load_extension("git_worktree")
-
-        local worktree = require('telescope').extensions.git_worktree
-
         vim.keymap.set('n', '<leader>gc', builtin.git_branches, {})
-        vim.keymap.set('n', '<leader>gw', worktree.git_worktrees, {})
-        vim.keymap.set('n', '<leader>gm', worktree.create_git_worktree, {})
 	end
 }

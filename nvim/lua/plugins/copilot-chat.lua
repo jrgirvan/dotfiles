@@ -45,6 +45,7 @@ return {
             { "nvim-lua/plenary.nvim" },
         },
         opts = {
+            model = 'claude-sonnet-4',
             question_header = "## User ",
             answer_header = "## Copilot ",
             error_header = "## Error ",

@@ -3,9 +3,14 @@
 [core]
     sshCommand = "ssh -i ~/.ssh/id_ed25519_john-girvan_xero"
     hooksPath = ~/.git/hooks-work
+
 [github]
     user = john-girvan_xero
+
 [trailer "jira"]
     key = Jira-ref
     command = "git branch --show-current | grep -oiE '^[a-z]+-[0-9]+' | tr '[:lower:]' '[:upper:]'"
     ifExists = doNothing
+
+[url "ssh://git@github.com/"]
+    insteadOf = https://github.com/

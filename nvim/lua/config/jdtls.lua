@@ -145,8 +145,8 @@ local function setup_jdtls()
         java = {
             -- Enable code formatting
             format = {
-                enabled = true,
-                -- Use the Google Style guide for code formattingh
+                enabled = false,
+                -- Use the Google Style guide for code formatting
                 settings = {
                     url = vim.fn.stdpath("config") .. "/lang_servers/intellij-java-google-style.xml",
                     profile = "GoogleStyle"
