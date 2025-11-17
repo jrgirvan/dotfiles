@@ -16,6 +16,7 @@ return {
     },
 
     config = function()
+		require("lspconfig.ui.windows").default_options.border = "single"
         -- Redirect notifications to snacks.nvim
         --vim.notify = require("snacks").notify
 
@@ -58,28 +59,8 @@ return {
             },
             handlers = {
                 function(server_name)
-                    require("lspconfig")[server_name].setup({
-                    })
+                    vim.lsp.enable(server_name)
                 end,
-                ["lua_ls"] = function()
-                    local lspconfig = require("lspconfig")
-                    lspconfig.lua_ls.setup {
-                        settings = {
-                            Lua = {
-                                diagnostics = {
-                                    globals = { "vim" }
-                                }
-                            }
-                        }
-                    }
-                end,
-                --["lua_ls"] = attach,
-                --["tsserver"] = attach,
-                --["eslint"] = attach,
-                --["rust_analyzer"] = attach,
-                --["pyright"] = attach,
-                --["gopls"] = attach,
-                --["omnisharp"] = attach
             }
         })
 

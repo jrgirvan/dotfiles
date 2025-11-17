@@ -23,12 +23,12 @@ ssh-add ~/.ssh/id_ed25519_john-girvan_xero
 eval "$(starship init zsh)"
 eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"
+
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=(/Users/john.girvan/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
+
 # AWS CLI completions
 autoload -U +X bashcompinit && bashcompinit
 complete -C $(which aws_completer) aws
@@ -40,3 +40,6 @@ complete -C $(which aws_completer) aws-sso
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# opencode
+export PATH=/Users/john.girvan/.opencode/bin:$PATH

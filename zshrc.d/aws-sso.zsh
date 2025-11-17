@@ -41,4 +41,5 @@ aws-sso-clear() {
     fi
     eval $(aws-sso ${=_args} eval -c)
 }
+
 # END_AWS_SSO_CLI

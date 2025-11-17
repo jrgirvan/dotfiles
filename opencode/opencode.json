@@ -1,0 +1,6 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "theme": "catppuccin-mocha",
+  "autoupdate": true,
+  "share": "disabled"
+}

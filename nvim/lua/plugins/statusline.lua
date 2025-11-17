@@ -30,6 +30,104 @@ return {
 		if custom_catppuccin.normal and custom_catppuccin.normal.c then
 			custom_catppuccin.normal.c.bg = custom_catppuccin.normal.c.bg or "#1e1e2e"
 		end
+		-- Cache for VCS info to reduce system calls
+		local vcs_cache = {
+			value = "",
+			last_update = 0,
+			cache_duration = 5000, -- 5 seconds in milliseconds
+			updating = false,
+		}
+
+		-- Create custom highlight groups once at startup
+		local function setup_highlight_groups()
+			local lualine_b_hl = vim.api.nvim_get_hl(0, { name = "lualine_b_normal" })
+			vim.api.nvim_set_hl(0, "lualine_b_bold", {
+				fg = lualine_b_hl.fg,
+				bg = lualine_b_hl.bg,
+				bold = true,
+			})
+			vim.api.nvim_set_hl(0, "lualine_b_grey", {
+				fg = "Gray",
+				bg = lualine_b_hl.bg,
+			})
+		end
+
+		local function update_vcs_info_async()
+			if vcs_cache.updating then
+				return
+			end
+			vcs_cache.updating = true
+
+			-- Check jujutsu first
+			vim.system(
+				{
+					"jj",
+					"log",
+					"-r",
+					"@",
+					"--no-graph",
+					"--color",
+					"never",
+					"-T",
+					'coalesce(bookmarks.join(", "), change_id) ++ "|" ++ change_id.shortest() ++ "|" ++ change_id.short()',
+				},
+				{ text = true },
+				function(obj)
+					vim.schedule(function()
+						if obj.code == 0 and obj.stdout and obj.stdout ~= "" then
+							local parts = vim.split(obj.stdout:gsub("%s+", ""), "|")
+							if #parts >= 3 then
+								local ref = parts[1]
+								local shortest = parts[2]
+								local short = parts[3]
+
+								-- Calculate padding to make total length = shortest + remaining = 4
+								local shortest_len = #shortest
+								local max_total_len = 4
+								local remaining_len = math.max(0, max_total_len - shortest_len)
+								local remaining = short:sub(shortest_len + 1, shortest_len + remaining_len)
+
+								vcs_cache.value = "🥋"
+									.. ref
+									.. " %#lualine_b_bold#"
+									.. shortest
+									.. "%#lualine_b_grey#"
+									.. remaining
+									.. "%#lualine_b_normal#"
+								vcs_cache.last_update = vim.loop.now()
+								vcs_cache.updating = false
+								return
+							end
+						end
+
+						-- Fallback to git if jj failed
+						vim.system({ "git", "branch", "--show-current" }, { text = true }, function(git_obj)
+							vim.schedule(function()
+								if git_obj.code == 0 and git_obj.stdout and git_obj.stdout ~= "" then
+									vcs_cache.value = "󰊢 " .. git_obj.stdout:gsub("%s+", "")
+								else
+									vcs_cache.value = ""
+								end
+								vcs_cache.last_update = vim.loop.now()
+								vcs_cache.updating = false
+							end)
+						end)
+					end)
+				end
+			)
+		end
+
+		local function get_cached_vcs_info()
+			local now = vim.loop.now()
+			if now - vcs_cache.last_update > vcs_cache.cache_duration and not vcs_cache.updating then
+				update_vcs_info_async()
+			end
+			return vcs_cache.value
+		end
+
+		-- Setup highlight groups and initialize VCS info on startup
+		setup_highlight_groups()
+		update_vcs_info_async()
 		require("lualine").setup({
 			options = {
 				theme = custom_catppuccin, -- 'gruvbox', 'nord', 'solarized_dark', 'onedark', 'tokyonight'
@@ -37,7 +135,10 @@ return {
 			sections = {
 				lualine_a = { "mode" },
 				lualine_b = {
-					"branch",
+					{
+						get_cached_vcs_info,
+						icon = "",
+					},
 					{
 						"diff",
 						colored = true,

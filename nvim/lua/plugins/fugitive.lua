@@ -45,8 +45,5 @@ return {
 			vim.cmd.Git("branch")
 		end, { desc = "List branches" })
 
-		vim.keymap.set("n", "<leader>gsw", ":Git switch ", { desc = "Switch branch" })
-
-		vim.keymap.set("n", "<leader>gsc", ":Git switch -c ", { desc = "Create and switch branch" })
 	end,
 }

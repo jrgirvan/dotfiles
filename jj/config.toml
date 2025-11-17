@@ -1,0 +1,10 @@
+[user]
+name = "John Girvan"
+email = "jrgirvan@gmail.com"
+
+[aliases]
+init = ["git", "init"]
+
+[ui]
+diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
+default-command = "log"

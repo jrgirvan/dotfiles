@@ -1,12 +1,3 @@
-function ColorMyPencils(color)
-	--	color = color or "rose-pine"
-	color = color or "catppuccin"
-	vim.cmd.colorscheme(color)
-
-	vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-end
-
 return {
 	{
 		"catppuccin/nvim",
@@ -15,7 +6,7 @@ return {
 		priority = 1000,
 		config = function()
 			require("catppuccin").setup({
-				custom_highlights = function(colors)
+				custom_highlights = function(_)
 					return {
 						-- Override problematic colors
 						--String = { fg = "#7adb70" }, -- blue instead of green
@@ -23,7 +14,9 @@ return {
 						--GitSignsAdd = { fg = "#7adb70" },
 						DiffAdd = { bg = "#1a2d42" },
 						DiagnosticError = { fg = "#a0525a" },
-						-- Add more overrides as needed
+						-- Custom line number highlights
+						LineNr = { fg = "#6c7086" },
+						CursorLineNr = { fg = "#f38ba8", bold = true },
 					}
 				end,
 				color_overrides = {
@@ -39,6 +32,13 @@ return {
 				},
 			})
 			vim.cmd.colorscheme("catppuccin-mocha")
+			-- Force cursor line number highlight after colorscheme/buffer loads
+			vim.api.nvim_create_autocmd({ "ColorScheme", "BufEnter" }, {
+				pattern = "*",
+				callback = function()
+					vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#f38ba8", bold = true })
+				end,
+			})
 		end,
 	},
 	--[[

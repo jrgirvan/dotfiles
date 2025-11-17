@@ -1,39 +1,50 @@
 return {
---    "github/copilot.vim",
-    "zbirenbaum/copilot.lua",
-    dependencies = {
-        "hrsh7th/nvim-cmp",
-    },
-    cmd = "Copilot",
-    build = ":Copilot auth",
-    event = "InsertEnter",
-    config = function()
-        require("copilot").setup({
-            panel = {
-                enabled = true,
-                auto_refresh = true,
-            },
-            suggestion = {
-                enabled = true,
-                -- use the built-in keymapping for "accept" (<M-l>)
-                auto_trigger = true,
-                keymap = {
-                    accept = "<C-l>",
-                },
-            },
-        })
-
-        -- hide copilot suggestions when cmp menu is open
-        -- to prevent odd behavior/garbled up suggestions
-        local cmp_status_ok, cmp = pcall(require, "cmp")
-        if cmp_status_ok then
-            cmp.event:on("menu_opened", function()
-                vim.b.copilot_suggestion_hidden = true
-            end)
-
-            cmp.event:on("menu_closed", function()
-                vim.b.copilot_suggestion_hidden = false
-            end)
-        end
-    end
+	"zbirenbaum/copilot.lua",
+	dependencies = {
+		"hrsh7th/nvim-cmp",
+	},
+	cmd = "Copilot",
+	build = ":Copilot auth",
+	event = "InsertEnter",
+	keys = {
+		{
+			"<C-a>",
+			function()
+				require("copilot.suggestion").accept()
+			end,
+			desc = "Copilot: Accept suggestion",
+			mode = { "i" },
+		},
+		{
+			"<C-x>",
+			function()
+				require("copilot.suggestion").dismiss()
+			end,
+			desc = "Copilot: Dismiss suggestion",
+			mode = { "i" },
+		},
+		{
+			"<C-\\>",
+			function()
+				require("copilot.panel").open()
+			end,
+			desc = "Copilot: Show panel",
+			mode = { "n", "i" },
+		},
+	},
+	init = function()
+		jg.create_user_command("Copilot", "Toggle Copilot suggestions", function()
+			require("copilot.suggestion").toggle_auto_trigger()
+		end, {})
+	end,
+	opts = {
+		panel = { enabled = false },
+		suggestion = {
+			auto_trigger = true, -- Suggest as we start typing
+			keymap = {
+				accept_word = "<C-l>",
+				accept_line = "<C-j>",
+			},
+		},
+	},
 }

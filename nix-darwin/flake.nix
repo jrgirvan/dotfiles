@@ -36,7 +36,6 @@
             pkgs.starship
             pkgs.btop
             pkgs.tmux
-            pkgs.go
             pkgs.devbox
             pkgs.lua5_4_compat
             pkgs.awscli2
@@ -48,6 +47,8 @@
             pkgs.lazygit
             pkgs.docker-client
             pkgs.colima
+            pkgs.podman
+            pkgs.docker-compose
             pkgs.docker-compose
             pkgs.docker-buildx
             pkgs.docker-credential-helpers
@@ -57,6 +58,10 @@
             pkgs.dive
             pkgs.cue
             pkgs.google-java-format
+            pkgs.yamlfmt
+            pkgs.graphviz
+            pkgs.gh
+            pkgs.jira-cli-go
           ];
 
           system.primaryUser = "john.girvan";

@@ -6,32 +6,18 @@ return {
         -- your configuration comes here
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
-        explorer = { enabled = false },
-        scope = { enabled = false },
         bigfile = { enabled = true },
-        dashboard = {
-            enabled = true,
-            preset = {
-                header = [[
-                                              
-       ████ ██████           █████      ██
-      ███████████             █████ 
-      █████████ ███████████████████ ███   ███████████
-     █████████  ███    █████████████ █████ ██████████████
-    █████████ ██████████ █████████ █████ █████ ████ █████
-  ███████████ ███    ███ █████████ █████ █████ ████ █████
- ██████  █████████████████████ ████ █████ █████ ████ ██████
-        ]],
-            },
-        },
+        dashboard = { enabled = false },
+        explorer = { enabled = false },
+        git = { enabled = true },
         indent = { enabled = true },
         input = { enabled = true },
-        git = { enabled = true },
-        picker = { enabled = true },
         notifier = { enabled = true },
+        picker = { enabled = true },
         quickfile = { enabled = true },
+        scope = { enabled = false },
         scroll = { enabled = false },
-        statuscolumn = { enabled = true },
+        statuscolumn = { enabled = false },
         words = { enabled = true },
     },
     keys = {

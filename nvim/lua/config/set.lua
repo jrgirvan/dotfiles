@@ -1,3 +1,10 @@
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
+
 vim.opt.guicursor = ""
 
 vim.opt.nu = true
@@ -37,11 +44,10 @@ vim.opt.updatetime = 50
 -- Don't pass messages to |ins-completion-menu|.
 --vim.opt.shortmess:append("c")
 
-vim.opt.colorcolumn = "120"
+--vim.opt.colorcolumn = "120"
 
-
-vim.api.nvim_create_autocmd('BufEnter', {
-    pattern = {'*.md'},
-    group = group,
-    command = 'setlocal wrap'
-})
+-- Make line numbers brighter
+--vim.api.nvim_set_hl(0, 'LineNr', { fg = '#ffffff', bold = true })
+--vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#ffff00', bold = true })
+--
+vim.opt.winborder = "rounded"
