@@ -1,4 +1,6 @@
-return {
+return {}
+
+--[[return {
 	{
 		"olimorris/codecompanion.nvim", -- The KING of AI programming
 		cmd = { "CodeCompanion", "CodeCompanionChat", "CodeCompanionActions" },
@@ -113,8 +115,9 @@ return {
 			},
 		},
 		init = function()
-			vim.cmd([[cab cc CodeCompanion]])
+			vim.cmd([cab cc CodeCompanion])
 			require("plugins.custom.spinner"):init()
 		end,
 	},
 }
+--]]
