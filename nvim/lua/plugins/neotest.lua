@@ -1,29 +1,40 @@
 return {
-    "nvim-neotest/neotest",
-    dependencies = {
-        "nvim-neotest/nvim-nio",
-        "nvim-lua/plenary.nvim",
-        "antoinemadec/FixCursorHold.nvim",
-        "nvim-treesitter/nvim-treesitter",
-        { "fredrikaverpil/neotest-golang", version = "*" },
-        { "nvim-neotest/neotest-python",   version = "*" },
-        { "haydenmeade/neotest-jest",      version = "*" },
-        { "Issafalcon/neotest-dotnet",     version = "*" },
-    },
-    config = function()
-        local neotest_golang_opts = {} -- Specify custom configuration
-        local neotest = require("neotest")
-        neotest:setup({
-            adapters = {
-                require("neotest-golang")(neotest_golang_opts), -- Registration
-                require("neotest-python")({
-                    dap = { justMyCode = false },
-                }),
-                require("neotest-plenary"),
-                require("neotest-vim-test")({
-                    ignore_file_types = { "python", "vim", "lua" },
-                }),
-            },
-        })
-    end,
+	"nvim-neotest/neotest",
+	dependencies = {
+		"nvim-neotest/nvim-nio",
+		"nvim-lua/plenary.nvim",
+		"antoinemadec/FixCursorHold.nvim",
+		{ "nvim-neotest/neotest-python", version = "*" },
+		{ "haydenmeade/neotest-jest", version = "*" },
+		{ "Issafalcon/neotest-dotnet", version = "*" },
+		{
+			"nvim-treesitter/nvim-treesitter", -- Optional, but recommended
+			branch = "main", -- NOTE; not the master branch!
+			build = function()
+				vim.cmd(":TSUpdate go")
+			end,
+		},
+		{
+			"fredrikaverpil/neotest-golang",
+			version = "*", -- Optional, but recommended; track releases
+			build = function()
+				vim.system({ "go", "install", "gotest.tools/gotestsum@latest" }):wait() -- Optional, but recommended
+			end,
+		},
+	},
+	config = function()
+		local neotest_golang_config = {
+			runner = "gotestsum", -- Optional, but recommended
+		}
+		require("neotest").setup({
+			adapters = {
+				require("neotest-golang")(neotest_golang_config), -- Registration
+				require("neotest-python")({
+					dap = { justMyCode = false },
+				}),
+				require("neotest-jest"),
+				require("neotest-dotnet"),
+			},
+		})
+	end,
 }

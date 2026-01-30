@@ -81,14 +81,26 @@ return {
 								local shortest = parts[2]
 								local short = parts[3]
 
+                                -- if short is substring of ref hide ref
+                                if short == ref:sub(1, #short) then
+                                    ref = ""
+                                end
+                                -- limit ref display length to 10 characters, adding "..." if longer
+                                local ref_display = ""
+                                if #ref > 10 then
+                                    ref_display = ref:sub(1, 7) .. "..."
+                                else
+                                    ref_display = ref
+                                end
+
 								-- Calculate padding to make total length = shortest + remaining = 4
 								local shortest_len = #shortest
-								local max_total_len = 4
+								local max_total_len = 5
 								local remaining_len = math.max(0, max_total_len - shortest_len)
 								local remaining = short:sub(shortest_len + 1, shortest_len + remaining_len)
 
 								vcs_cache.value = "🥋"
-									.. ref
+									.. ref_display
 									.. " %#lualine_b_bold#"
 									.. shortest
 									.. "%#lualine_b_grey#"

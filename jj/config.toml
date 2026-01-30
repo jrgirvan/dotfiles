@@ -8,3 +8,6 @@ init = ["git", "init"]
 [ui]
 diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
 default-command = "log"
+
+[revsets]
+immutable-heads = "none()"

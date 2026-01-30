@@ -1,0 +1,8 @@
+[tools]
+bun = "latest"
+go = "latest"
+node = "latest"
+python = "latest"
+
+[settings]
+legacy_version_file = true  # Read .nvmrc, .python-version, etc.

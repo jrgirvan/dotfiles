@@ -14,10 +14,26 @@ local rep = require("luasnip.extras").rep
 
 local fmt = require("luasnip.extras.fmt").fmt
 
-local ts_locals = require "nvim-treesitter.locals"
-local ts_utils = require "nvim-treesitter.ts_utils"
-
+-- Treesitter helper functions (replacing removed nvim-treesitter modules)
 local get_node_text = vim.treesitter.get_node_text
+
+-- Helper function to get node at cursor (replaces ts_utils.get_node_at_cursor)
+local function get_node_at_cursor()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local row, col = cursor[1] - 1, cursor[2]
+  return vim.treesitter.get_node({ pos = { row, col } })
+end
+
+-- Helper function to get scope tree (replaces ts_locals.get_scope_tree)
+local function get_scope_tree(node)
+  local result = {}
+  local current = node
+  while current do
+    table.insert(result, current)
+    current = current:parent()
+  end
+  return result
+end
 
 local transforms = {
   int = function(_, _)
@@ -101,8 +117,8 @@ local function_node_types = {
 }
 
 local function go_result_type(info)
-  local cursor_node = ts_utils.get_node_at_cursor()
-  local scope = ts_locals.get_scope_tree(cursor_node, 0)
+  local cursor_node = get_node_at_cursor()
+  local scope = get_scope_tree(cursor_node)
 
   local function_node
   for _, v in ipairs(scope) do

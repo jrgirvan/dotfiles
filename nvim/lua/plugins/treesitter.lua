@@ -1,30 +1,41 @@
 return {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    config = function()
-        require("nvim-treesitter.configs").setup({
-            ensure_installed = { "vimdoc", "javascript", "typescript", "go", "lua", "rust", "python", "java" },
-            sync_install = false,
-            auto_install = true,
-            indent = {
-                enable = true,
-            },
-            highlight = {
-                enable = true,
-                additional_vim_regex_highlighting = { "markdown" },
-            },
-        })
+  'nvim-treesitter/nvim-treesitter',
+  lazy = false,
+  branch = 'main',
+  build = ':TSUpdate',
+  config = function()
+    -- Setup nvim-treesitter with default install directory
+    require('nvim-treesitter').setup({
+      install_dir = vim.fn.stdpath('data') .. '/site'
+    })
 
-        local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
-        parser_config.xdc = {
-            install_info = {
-                url = "~/work/odl/operational-data-layer/tree-sitter-xdc", -- local path or git repo
-                files = { "src/parser.c" }, -- note that some parsers also require src/scanner.c or src/scanner.cc
-                -- optional entries:
-                generate_requires_npm = false, -- if stand-alone parser without npm dependencies
-                requires_generate_from_grammar = false, -- if folder contains pre-generated src/parser.c
-            },
-            filetype = "xdc",                -- if filetype does not match the parser name
+    -- Install parsers
+    require('nvim-treesitter').install({ 'vimdoc', 'javascript', 'typescript', 'go', 'lua', 'rust', 'python', 'java' })
+
+    -- Configure custom xdc parser
+    vim.api.nvim_create_autocmd('User', {
+      pattern = 'TSUpdate',
+      callback = function()
+        require('nvim-treesitter.parsers').xdc = {
+          install_info = {
+            path = vim.fn.expand('~/work/odl/operational-data-layer/tree-sitter-xdc'),
+            location = 'parser',
+            generate = false,
+          },
         }
-    end
+      end
+    })
+
+    -- Register xdc filetype
+    vim.treesitter.language.register('xdc', 'xdc')
+
+    -- Enable treesitter highlighting for common languages
+    local langs = { 'lua', 'vim', 'vimdoc', 'javascript', 'typescript', 'go', 'rust', 'python', 'java', 'markdown' }
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = langs,
+      callback = function()
+        vim.treesitter.start()
+      end,
+    })
+  end,
 }

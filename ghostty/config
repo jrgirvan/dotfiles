@@ -1,5 +1,6 @@
 theme = catppuccin-deuteranopia.conf
-font-family = "JetBrains Mono"
+font-family = "Berkeley Mono"
+#font-family = "JetBrains Mono"
 background = "#1e1e1e"
 font-size = 17
 background-blur-radius = 20

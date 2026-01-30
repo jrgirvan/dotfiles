@@ -59,6 +59,29 @@ return {
             },
             handlers = {
                 function(server_name)
+                    -- Custom gopls configuration to fix watch errors
+                    if server_name == 'gopls' then
+                        vim.lsp.config(server_name, {
+                            settings = {
+                                gopls = {
+                                    directoryFilters = {
+                                        "-**/node_modules",
+                                        "-**/.git",
+                                        "-**/vendor",
+                                    },
+                                    hints = {
+                                        assignVariableTypes = true,
+                                        compositeLiteralFields = true,
+                                        compositeLiteralTypes = true,
+                                        constantValues = true,
+                                        functionTypeParameters = true,
+                                        parameterNames = true,
+                                        rangeVariableTypes = true,
+                                    },
+                                },
+                            },
+                        })
+                    end
                     vim.lsp.enable(server_name)
                 end,
             }
