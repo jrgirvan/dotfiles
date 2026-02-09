@@ -1,0 +1,4 @@
+# WSL-specific packages
+wslu
+openssh
+keychain

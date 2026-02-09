@@ -1,0 +1,12 @@
+# Core AUR packages
+mise-bin
+atuin
+ghostty-bin
+
+# Optional popular AUR packages (uncomment as needed):
+# google-chrome
+# visual-studio-code-bin
+# spotify
+# slack-desktop
+# discord
+# postman-bin

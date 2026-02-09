@@ -43,7 +43,7 @@
 
 [user]
         name = John Girvan
-        email = jrgirvan@gmail.com
+	email = jrgirvan@gmail.com
 
 [init]
     defaultBranch = main

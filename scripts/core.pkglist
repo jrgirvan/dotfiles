@@ -1,0 +1,49 @@
+# Core system packages
+base-devel
+git
+curl
+wget
+stow
+
+# Editors
+vim
+neovim
+
+# System monitoring
+htop
+btop
+
+# Shell & terminal
+zsh
+tmux
+starship
+
+# Modern CLI tools
+ripgrep
+fd
+fzf
+bat
+eza
+zoxide
+gum
+
+# Archive tools
+unzip
+zip
+tar
+p7zip
+
+# Documentation
+man-db
+man-pages
+
+# Version control
+jujutsu
+
+# Build tools
+make
+cmake
+
+# Network tools
+openssh
+rsync

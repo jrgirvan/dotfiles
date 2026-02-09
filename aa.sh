@@ -1,3 +1,93 @@
+#!/usr/bin/env bash
+set -e
+
+echo "==> Updating zsh config files with OS/machine detection..."
+
+# Create updated 00-options.zsh
+cat > zsh/conf.d/00-options.zsh << 'EOF'
+# Shell options and keybindings
+
+# Keybindings
+bindkey "^[[3~" delete-char
+
+# Shell options
+setopt IGNORE_EOF  # Don't exit on Ctrl-D
+
+# Completion styling (before compinit)
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+
+# Environment detection
+export MACHINE_TYPE="${MACHINE_TYPE:-$(cat ~/.machine_type 2>/dev/null || echo 'personal')}"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    export OS_TYPE="macos"
+elif [[ -f /etc/arch-release ]]; then
+    export OS_TYPE="arch"
+else
+    export OS_TYPE="linux"
+fi
+
+# Helper functions for conditional configs
+is_work() { [[ "$MACHINE_TYPE" == "work" ]]; }
+is_personal() { [[ "$MACHINE_TYPE" == "personal" ]]; }
+is_macos() { [[ "$OS_TYPE" == "macos" ]]; }
+is_linux() { [[ "$OS_TYPE" == "linux" ]] || [[ "$OS_TYPE" == "arch" ]]; }
+is_arch() { [[ "$OS_TYPE" == "arch" ]]; }
+EOF
+
+# Create updated 20-homebrew.zsh
+cat > zsh/conf.d/20-homebrew.zsh << 'EOF'
+# Homebrew setup (macOS only)
+
+is_macos || return 0
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+export HOMEBREW_NO_AUTO_UPDATE=1
+
+# GNU tools - prefer over macOS POSIX versions
+addToPathFront $HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin
+addToPathFront $HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin
+addToPathFront $HOMEBREW_PREFIX/opt/gnu-tar/libexec/gnubin
+addToPathFront $HOMEBREW_PREFIX/opt/findutils/libexec/gnubin
+addToPathFront $HOMEBREW_PREFIX/opt/gawk/libexec/gnubin
+addToPathFront $HOMEBREW_PREFIX/opt/grep/libexec/gnubin
+EOF
+
+# Create updated 80-ssh.zsh
+cat > zsh/conf.d/80-ssh.zsh << 'EOF'
+# SSH agent setup
+
+if is_macos; then
+    # macOS uses the system SSH agent with Keychain integration.
+    # Keys are configured in ~/.ssh/config with:
+    #   AddKeysToAgent yes
+    #   UseKeychain yes
+    #
+    # To add keys to Keychain once:
+    #   ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+    #   ssh-add --apple-use-keychain ~/.ssh/id_ed25519_john-girvan_xero
+    :
+elif is_linux; then
+    # Linux SSH agent setup
+    # Start ssh-agent if not running
+    if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+        ssh-agent > "$HOME/.ssh/agent-env"
+    fi
+
+    # Source agent environment
+    if [[ -f "$HOME/.ssh/agent-env" ]]; then
+        source "$HOME/.ssh/agent-env" > /dev/null
+    fi
+
+    # Auto-add keys if keychain is available
+    if command -v keychain &>/dev/null; then
+        eval $(keychain --eval --quiet id_ed25519 id_ed25519_john-girvan_xero 2>/dev/null)
+    fi
+fi
+EOF
+
+# Create updated 90-aws.zsh
+cat > zsh/conf.d/90-aws.zsh << 'EOF'
 # AWS configuration (work machines only)
 
 is_work || return 0
@@ -137,3 +227,20 @@ aws-doctor() {
     fi
   fi
 }
+EOF
+
+echo "✓ Updated zsh/conf.d/00-options.zsh"
+echo "✓ Updated zsh/conf.d/20-homebrew.zsh"
+echo "✓ Updated zsh/conf.d/80-ssh.zsh"
+echo "✓ Updated zsh/conf.d/90-aws.zsh"
+echo ""
+echo "All zsh configs updated with OS/machine detection! 🎉"
+echo ""
+echo "The configs now support:"
+echo "  - is_work() / is_personal() - Machine type detection"
+echo "  - is_macos() / is_linux() / is_arch() - OS detection"
+echo "  - Conditional loading (configs early-return if not applicable)"
+echo ""
+echo "Next steps:"
+echo "  1. Run setup script to set machine type: ./scripts/setup.sh"
+echo "  2. Restart shell: exec zsh"

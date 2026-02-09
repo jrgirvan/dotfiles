@@ -1,4 +1,6 @@
-# Homebrew setup (must be early for PATH)
+# Homebrew setup (macOS only)
+
+is_macos || return 0
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
 export HOMEBREW_NO_AUTO_UPDATE=1

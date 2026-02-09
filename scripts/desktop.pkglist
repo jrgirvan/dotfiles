@@ -1,0 +1,71 @@
+# Hyprland desktop environment
+hyprland
+hyprpaper
+hypridle
+hyprlock
+xdg-desktop-portal-hyprland
+qt5-wayland
+qt6-wayland
+
+# Wayland essentials
+wayland
+wl-clipboard
+xorg-xwayland
+
+# Status bar & launcher
+waybar
+rofi-wayland
+
+# Display manager
+sddm
+
+# Desktop applications
+firefox
+mpv
+vlc
+gimp
+inkscape
+libreoffice-fresh
+thunar
+gvfs
+tumbler
+
+# Fonts
+ttf-dejavu
+ttf-liberation
+noto-fonts
+noto-fonts-emoji
+ttf-font-awesome
+ttf-jetbrains-mono-nerd
+
+# Audio
+pipewire
+pipewire-alsa
+pipewire-pulse
+pipewire-jack
+wireplumber
+pavucontrol
+
+# Networking
+networkmanager
+network-manager-applet
+
+# Screenshot & screen recording
+grim
+slurp
+swappy
+
+# Notifications
+mako
+
+# File manager
+thunar
+thunar-archive-plugin
+file-roller
+
+# Image viewer
+imv
+
+# PDF viewer
+zathura
+zathura-pdf-mupdf
