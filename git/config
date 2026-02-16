@@ -56,3 +56,6 @@
 #
 [includeIf "gitdir:~/work/"]
     path = work
+
+[includeIf "gitdir:~/dotfiles/"]
+    path = personal
