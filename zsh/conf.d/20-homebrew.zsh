@@ -1,4 +1,8 @@
-# Homebrew setup (must be early for PATH)
+# Homebrew setup (macOS only, must be early for PATH)
+
+if [[ "$(uname -s)" != "Darwin" ]]; then
+  return 0
+fi
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
 export HOMEBREW_NO_AUTO_UPDATE=1

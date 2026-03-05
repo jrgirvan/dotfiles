@@ -1,39 +1,23 @@
+# Brewfile - macOS only
+# Cross-platform tools are managed by mise (see mise/config.toml)
+# Work-only tools (aws, k8s, etc.) are in ~/work/.mise.toml
 
-# Packages
-
-# Fonts
-
-
-
-
-# Brewfile
 tap "FelixKratz/formulae"
 tap "omnisharp/omnisharp-roslyn"
-tap "deviceinsight/packages"
 tap "nikitabobko/tap"
 
-# Core CLI tools
-brew "zsh"
+# Core (not available in mise)
+brew "bash"    # macOS ships bash 3.2 from 2007
+brew "btop"    # aqua backend doesn't support macOS
 brew "git"
-brew "direnv"
-brew "mise"
-brew "neovim"
-brew "fzf"
-brew "ripgrep"
-brew "atuin"
-brew "starship"
-brew "btop"
-brew "tmux"
-brew "lazygit"
-brew "jq"
-brew "yq"
-brew "gh"
+brew "graphviz" # for go pprof, dot diagrams
+brew "luarocks" # not in mise registry, needed for SbarLua
 brew "stow"
-brew "stern"
 brew "tree"
+brew "watch"
+brew "zsh"
 
-
-# GNU tools (replace macOS POSIX)
+# GNU tools (replace macOS POSIX versions)
 brew "coreutils"
 brew "gnu-sed"
 brew "gnu-tar"
@@ -41,36 +25,21 @@ brew "gawk"
 brew "findutils"
 brew "grep"
 
-# AWS
-brew "awscli"
-brew "aws-vault"
-brew "aws-sso-cli"
-
-# Kubernetes & IaC
-brew "kubectl"
-brew "kustomize"
-brew "helm"
-brew "terraform"
-brew "k9s"
-
 # Container & Docker
 brew "docker-compose"
 brew "docker-buildx"
 brew "docker-credential-helper"
 
-# Kafka
-brew "kafkactl", args: ["with-aws-plugin"]
+# jj TUI (not in mise registry)
+brew "lazyjj"
 
-# Dev tools
-brew "lua"
+# macOS-specific tools
 brew "sketchybar"
 brew "borders"
 brew "ical-buddy"
-brew "jj"
-brew "lazyjj"
 brew "omnisharp-mono"
-brew "dive"
-brew "watch"
+brew "nowplaying-cli"
+brew "switchaudio-osx"
 
 # Casks (GUI apps)
 cask "nikitabobko/tap/aerospace"
@@ -78,8 +47,6 @@ cask "obsidian"
 cask "vmware-fusion"
 cask "dbeaver-community"
 cask "background-music"
-brew "nowplaying-cli"
-brew "switchaudio-osx"
 cask "docker"
 
 cask "font-jetbrains-mono-nerd-font"
