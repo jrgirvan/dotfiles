@@ -1,7 +1,8 @@
 theme = catppuccin-deuteranopia.conf
-font-family = "Berkeley Mono"
-#font-family = "JetBrains Mono"
-background = "#1e1e1e"
+#font-family = "Ioskeley Mono"
+#font-family = "Berkeley Mono"
+font-family = "JetBrains Mono"
+background = "#1e1e2e"
 font-size = 17
 background-blur-radius = 20
 mouse-hide-while-typing = true
@@ -23,7 +24,10 @@ keybind=ctrl+7=text:\x01\x37
 keybind=ctrl+8=text:\x01\x38
 keybind=ctrl+9=text:\x01\x39
 keybind=ctrl+0=text:\x01\x30
+keybind=ctrl+.=text:\x1b[46;5u
 
 keybind=home=text:\x1b[7~
 keybind=end=text:\x1b[8~
+keybind=super+arrow_left=text:\x1b[7~
+keybind=super+arrow_right=text:\x1b[8~
 keybind = shift+enter=text:\x1b\r

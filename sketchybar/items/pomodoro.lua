@@ -2,8 +2,15 @@
 local default_duration = 25 * 60
 local sound_path = "/System/Library/PrivateFrameworks/ScreenReader.framework/Versions/A/Resources/Sounds/"
 local active_timer_end = nil
+local pulse_delays = {}
 
 -- 2. HELPERS
+local function cancel_pulses()
+	for _, handle in ipairs(pulse_delays) do
+		SBAR.delay_cancel(handle)
+	end
+	pulse_delays = {}
+end
 local function play_sound(file)
 	SBAR.exec("afplay " .. sound_path .. file)
 end
@@ -21,27 +28,79 @@ local timer = SBAR.add("item", "pomodoro", {
 	update_freq = 0, -- Don't update unless running
 })
 
--- 5. LOGIC: Stop
+-- 5. LOGIC: Done Animation
+local done_color = COLORS.icon.pomodoro
+local flash_color = 0xffffffff
+local pulse_count = 6
+local pulse_interval = 0.4
+
+local function pulse_done()
+	cancel_pulses()
+
+	for i = 0, pulse_count - 1 do
+		local handle = SBAR.delay(i * pulse_interval, function()
+			-- Flash: pomodoro red -> white
+			SBAR.animate("sin", 10, function()
+				timer:set({
+					icon = { color = flash_color },
+					label = { color = flash_color },
+				})
+			end)
+			-- Flash back: white -> pomodoro red
+			SBAR.animate("sin", 10, function()
+				timer:set({
+					icon = { color = done_color },
+					label = { color = done_color },
+				})
+			end)
+
+			-- Bounce on first pulse
+			if i == 0 then
+				SBAR.animate("sin", 10, function()
+					timer:set({ y_offset = 6 })
+					SBAR.animate("sin", 10, function()
+						timer:set({ y_offset = 0 })
+					end)
+				end)
+			end
+		end)
+		table.insert(pulse_delays, handle)
+	end
+
+	-- Reset label color to default after all pulses finish
+	local reset_handle = SBAR.delay(pulse_count * pulse_interval + 0.2, function()
+		timer:set({ label = { color = COLORS.accent_color } })
+	end)
+	table.insert(pulse_delays, reset_handle)
+end
+
+-- 6. LOGIC: Stop/Reset
 local function stop_timer()
+	cancel_pulses()
 	active_timer_end = nil
 	timer:set({
-		icon = { padding_right = DEFAULT_ITEM.icon.padding_right },
-		label = { drawing = false },
+		icon = { color = COLORS.icon.pomodoro, padding_right = DEFAULT_ITEM.icon.padding_right },
+		label = { drawing = false, color = COLORS.accent_color },
 		update_freq = 0,
 		popup = { drawing = false },
+		y_offset = 0,
 	})
 	play_sound("TrackingOff.aiff")
 end
 
--- 6. LOGIC: Start
+-- 7. LOGIC: Start
 local function start_timer(duration_seconds)
 	if not duration_seconds then
 		return
 	end
+	cancel_pulses()
 	active_timer_end = os.time() + duration_seconds
 	timer:set({
+		icon = { color = COLORS.icon.pomodoro },
+		label = { color = COLORS.accent_color },
 		update_freq = 1, -- Start ticking every second
 		popup = { drawing = false },
+		y_offset = 0,
 	})
 	play_sound("TrackingOn.aiff")
 	timer:trigger("routine")
@@ -71,7 +130,7 @@ local function open_custom_settimer()
 	)
 end
 
--- 7. LOGIC: Update Loop
+-- 8. LOGIC: Update Loop
 timer:subscribe("routine", function()
 	if not active_timer_end then
 		return
@@ -92,11 +151,18 @@ timer:subscribe("routine", function()
 			label = { string = "Done!" },
 			update_freq = 0,
 		})
+		pulse_done()
 		play_sound("GuideSuccess.aiff")
+		SBAR.delay(1.0, function()
+			play_sound("GuideSuccess.aiff")
+		end)
+		SBAR.delay(2.0, function()
+			play_sound("GuideSuccess.aiff")
+		end)
 	end
 end)
 
--- 8. CREATE POPUP MENU
+-- 9. CREATE POPUP MENU
 local presets = { 5, 10, 25, 45 }
 
 for _, mins in ipairs(presets) do
@@ -123,7 +189,7 @@ for _, mins in ipairs(presets) do
 	end)
 end
 
--- 9. CREATE "CUSTOM" INPUT ITEM
+-- 10. CREATE "CUSTOM" INPUT ITEM
 local custom = SBAR.add("item", "timer.custom", {
 	position = "popup." .. timer.name,
 	icon = { drawing = false },
@@ -146,7 +212,7 @@ custom:subscribe("mouse.exited", function()
 	custom:set({ background = { drawing = false } })
 end)
 
--- 10. MOUSE INTERACTIONS
+-- 11. MOUSE INTERACTIONS
 timer:subscribe("mouse.clicked", function(env)
 	if env.BUTTON == "right" then
 		if active_timer_end then

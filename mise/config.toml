@@ -1,8 +1,40 @@
 [tools]
+# Language runtimes
 bun = "latest"
 go = "latest"
+java = "21"
 node = "latest"
 python = "latest"
+rust = "latest"
+zig = "latest"
+dotnet = "10.0.201"
+
+# CLI tools
+atuin = "latest"
+fzf = "latest"
+gh = "latest"
+jj = "latest"
+jq = "latest"
+lazygit = "latest"
+lua = "latest"
+neovim = "latest"
+ripgrep = "latest"
+rust-analyzer = "latest"
+sops = "latest"
+starship = "latest"
+stern = "latest"
+terraform-ls = "latest"
+ty = "latest"
+"npm:typescript" = "latest"
+"npm:typescript-language-server" = "latest"
+tmux = "latest"
+yq = "latest"
+zls = "latest"
 
 [settings]
-legacy_version_file = true  # Read .nvmrc, .python-version, etc.
+legacy_version_file = true
+
+# btop only has linux builds in aqua, so only install on linux
+[tools.btop]
+version = "latest"
+os = ["linux"]

@@ -2,7 +2,8 @@
 
 addToPathFront $HOME/.local/bin
 addToPathFront $HOME/.local/scripts
-addToPathFront $HOME/go/bin
+# Go binaries - appended so mise shims take precedence
+addToPath $HOME/go/bin
 addToPathFront $HOME/.krew/bin
 addToPathFront /usr/local/opt/curl/bin
 

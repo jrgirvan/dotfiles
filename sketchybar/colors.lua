@@ -26,6 +26,7 @@ colors.icon = {
   apple = 0xfff2cdcd, -- Flamingo
   spaces = 0xffffffff, -- White
   front_app = 0xffa6e3a1, -- Green
+  weather = 0xff89dceb, -- Sky
 }
 
 -- 3. Define Your Schemes
