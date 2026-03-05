@@ -3,15 +3,20 @@
 # Add to fpath BEFORE compinit
 [[ -d $HOME/.docker/completions ]] && fpath=($HOME/.docker/completions $fpath)
 
-# Initialize completion system (once!)
-autoload -Uz compinit && compinit
+# Initialize completion system (rebuild cache once per day)
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 autoload -Uz bashcompinit && bashcompinit
 
 # fzf
-source <(fzf --zsh)
+command -v fzf &>/dev/null && source <(fzf --zsh)
 
 # jj (jujutsu)
-source <(COMPLETE=zsh jj)
+command -v jj &>/dev/null && source <(COMPLETE=zsh jj)
 
 # kubebuilder (if exists)
 [[ -f $HOME/.config/kubebuilder/completion.zsh ]] && source $HOME/.config/kubebuilder/completion.zsh

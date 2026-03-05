@@ -1,8 +1,32 @@
 [tools]
+# Language runtimes
 bun = "latest"
 go = "latest"
 node = "latest"
 python = "latest"
+rust = "latest"
+zig = "latest"
+
+# CLI tools
+atuin = "latest"
+fzf = "latest"
+gh = "latest"
+jj = "latest"
+jq = "latest"
+lazygit = "latest"
+lua = "latest"
+neovim = "latest"
+ripgrep = "latest"
+sops = "latest"
+starship = "latest"
+stern = "latest"
+tmux = "latest"
+yq = "latest"
 
 [settings]
-legacy_version_file = true  # Read .nvmrc, .python-version, etc.
+legacy_version_file = true
+
+# btop only has linux builds in aqua, so only install on linux
+[tools.btop]
+version = "latest"
+os = ["linux"]

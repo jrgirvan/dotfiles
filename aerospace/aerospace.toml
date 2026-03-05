@@ -146,3 +146,19 @@ run = ['move-node-to-workspace 5']
 [[on-window-detected]]
 if.app-id = 'app.zen-browser.zen'
 run = ['move-node-to-workspace 4']
+
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+run = ['move-node-to-workspace 3']
+
+[[on-window-detected]]
+if.app-id = 'com.spotify.client'
+run = ['move-node-to-workspace 5']
+
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome.app.kjgfgldnnfoeklkmfkjfagphfepbbdan'
+run = ['move-node-to-workspace 6']
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.teams2'
+run = ['move-node-to-workspace 6']

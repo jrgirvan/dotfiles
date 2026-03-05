@@ -1,57 +1,44 @@
 #!/bin/bash
 # scripts/post-install.sh
+# macOS-specific post-install tasks (run after stow + mise install)
 set -e
 
 echo ""
-echo "Setting up language managers..."
+echo "Running macOS post-install..."
 echo ""
 
-# Rustup & Rust
-if ! command -v rustup &> /dev/null; then
-  echo "1️⃣  Installing Rust via rustup..."
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  source "$HOME/.cargo/env"
-  rustup default stable
+# kubectl krew plugins
+if command -v kubectl-krew &>/dev/null; then
+  echo "==> Installing kubectl krew plugins..."
+  kubectl krew install ctx ns oidc-login 2>/dev/null || true
 else
-  echo "✅ Rustup already installed"
+  echo "    Skipping krew plugins (krew not installed)"
 fi
 
-# SDKman
-if ! command -v sdk &> /dev/null; then
-  echo "2️⃣  Installing SDKman..."
-  curl -s 'https://get.sdkman.io' | bash
-  source "$HOME/.sdkman/bin/sdkman-init.sh"
-  sdk install java
+# SketchyBar app font
+FONT_PATH="$HOME/Library/Fonts/sketchybar-app-font.ttf"
+if [[ ! -f "$FONT_PATH" ]]; then
+  echo "==> Installing SketchyBar app font..."
+  mkdir -p "$HOME/Library/Fonts"
+  curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.28/sketchybar-app-font.ttf \
+    -o "$FONT_PATH"
 else
-  echo "✅ SDKman already installed"
+  echo "    SketchyBar app font already installed"
 fi
 
-# Mise (install tools from config)
-echo "3️⃣  Installing Mise tools from config..."
-mise install
-
-# Kubectl krew plugins
-echo "4️⃣  Installing kubectl krew plugins..."
-kubectl krew install ctx ns oidc-login
-
-# SketchyBar
-curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.28/sketchybar-app-font.ttf -o $HOME/Library/Fonts/sketchybar-app-font.ttf
 # SbarLua
-(git clone https://github.com/FelixKratz/SbarLua.git /tmp/SbarLua && cd /tmp/SbarLua/ && make install && rm -rf /tmp/SbarLua/)
-echo "5️⃣  Starting SketchyBar service..."
-brew services start sketchybar
+if [[ ! -f "$HOME/.local/share/sketchybar_lua/sketchybar.so" ]]; then
+  echo "==> Building SbarLua..."
+  rm -rf /tmp/SbarLua
+  git clone https://github.com/FelixKratz/SbarLua.git /tmp/SbarLua
+  (cd /tmp/SbarLua/ && make install)
+  rm -rf /tmp/SbarLua
+else
+  echo "    SbarLua already installed"
+fi
+
+echo "==> Starting SketchyBar service..."
+brew services start sketchybar 2>/dev/null || true
 
 echo ""
-echo "✅ Language managers installed"
-echo ""
-echo "Per-project setup (each project):"
-echo "   devbox init"
-echo "   devbox add bun node go python java"
-echo "   direnv allow"
-echo ""
-echo "Verify:"
-echo "   rustc --version"
-echo "   sdk version"
-echo "   mise --version"
-echo "   kubectl ctx --help"
-echo ""
+echo "Done. macOS post-install complete."

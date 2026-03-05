@@ -18,8 +18,10 @@ require("items.pomodoro")
 SBAR.add("bracket", "right.bracket", { "calendar", "pomodoro" }, { background = { drawing = true } })
 separator_module.create("spotify_separator", "right")
 require("items.spofity")
--- Reset on unlock
-require("items.unlock_reset")
+-- Reset on unlock (disabled — was causing windows to move to the focused
+-- workspace on unlock because AeroSpace re-runs on-window-detected rules
+-- on restart). See items/unlock_reset.lua if needed.
+-- require("items.unlock_reset")
 
 -- 4. Finalize
 SBAR.end_config()

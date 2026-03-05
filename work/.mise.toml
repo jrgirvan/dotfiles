@@ -1,0 +1,18 @@
+# ~/work/.mise.toml
+# Work-only tools - activated when inside ~/work/ subtree
+# Installed via: mise install (from ~/work/)
+
+[tools]
+awscli = "latest"
+"aws-sso" = "latest"
+"aws-vault" = "latest"
+dive = "latest"
+"go-jira" = "latest"
+helm = "latest"
+k9s = "latest"
+kafkactl = "latest"
+kind = "latest"
+kubectl = "latest"
+kustomize = "latest"
+opentofu = "latest"
+terraform = "latest"

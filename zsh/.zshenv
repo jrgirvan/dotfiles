@@ -1,4 +1,2 @@
 # Minimal environment (runs for ALL shells including scripts)
-
-# Cargo/Rust
-[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
+# Note: Cargo/Rust env is sourced in ~/.zshenv (before ZDOTDIR redirect)
