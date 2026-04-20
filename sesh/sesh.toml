@@ -1,0 +1,29 @@
+#:schema https://github.com/joshmedeski/sesh/raw/main/sesh.schema.json
+
+[[session]]
+name = "dotfiles"
+path = "~/dotfiles"
+startup_command = "tmux rename-window 'editor' && tmux send-keys 'v .' Enter && tmux new-window -n 'vcs' && tmux send-keys 'lazyjj' Enter && tmux select-window -t 'editor'"
+
+[[session]]
+name = "nvim-v12"
+path = "~/dotfiles/nvim-v12"
+startup_command = "tmux rename-window 'editor' && tmux send-keys 'v .' Enter && tmux new-window -n 'vcs' && tmux send-keys 'lazyjj' Enter && tmux select-window -t 'editor'"
+
+[[wildcard]]
+pattern = "~/projects/*"
+startup_command = "tmux rename-window 'editor' && tmux send-keys 'v .' Enter && tmux new-window -n 'vcs' && tmux send-keys 'lazyjj' Enter && tmux select-window -t 'editor'"
+
+[[wildcard]]
+pattern = "~/work/*"
+startup_command = "tmux rename-window 'editor' && tmux send-keys 'v .' Enter && tmux new-window -n 'vcs' && tmux send-keys 'lazyjj' Enter && tmux select-window -t 'editor'"
+
+[[wildcard]]
+pattern = "~/personal/*"
+startup_command = "tmux rename-window 'editor' && tmux send-keys 'v .' Enter && tmux new-window -n 'vcs' && tmux send-keys 'lazyjj' Enter && tmux select-window -t 'editor'"
+
+[[wildcard]]
+pattern = "~/go/src/github.dev.xero.com/john-girvan/*"
+
+[[wildcard]]
+pattern = "~/go/src/github.com/xero-internal-actions-poc/*"

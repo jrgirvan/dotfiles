@@ -18,6 +18,9 @@ command -v fzf &>/dev/null && source <(fzf --zsh)
 # jj (jujutsu)
 command -v jj &>/dev/null && source <(COMPLETE=zsh jj)
 
+# sesh
+command -v sesh &>/dev/null && source <(sesh completion zsh)
+
 # kubebuilder (if exists)
 [[ -f $HOME/.config/kubebuilder/completion.zsh ]] && source $HOME/.config/kubebuilder/completion.zsh
 

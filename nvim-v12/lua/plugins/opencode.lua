@@ -6,7 +6,7 @@ vim.o.autoread = true
 ---@type opencode.Opts
 vim.g.opencode_opts = {}
 
-vim.keymap.set({ "n", "t" }, "<leader>oo", function()
+vim.keymap.set("n", "<leader>oo", function()
 	require("opencode").toggle()
 end, { desc = "Toggle opencode" })
 vim.keymap.set({ "n", "t" }, vim.keycode("<C-s>"), function()

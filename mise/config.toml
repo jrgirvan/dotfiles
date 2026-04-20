@@ -11,6 +11,9 @@ dotnet = "10.0.201"
 
 # CLI tools
 atuin = "latest"
+bat = "latest"
+eza = "latest"
+fd = "latest"
 fzf = "latest"
 gh = "latest"
 jj = "latest"
@@ -25,11 +28,15 @@ starship = "latest"
 stern = "latest"
 terraform-ls = "latest"
 ty = "latest"
+zoxide = "latest"
 "npm:typescript" = "latest"
 "npm:typescript-language-server" = "latest"
 tmux = "latest"
 yq = "latest"
 zls = "latest"
+
+# Go tools
+"go:github.com/nametake/golangci-lint-langserver" = "latest"
 
 [settings]
 legacy_version_file = true

@@ -8,6 +8,7 @@
 -- so in ~.config/lsp/lua_ls.lua for lua_ls, for example.
 vim.lsp.enable("lua_ls")
 vim.lsp.enable("gopls")
+vim.lsp.enable("golangci_lint_ls")
 vim.lsp.enable("jdtls")
 vim.lsp.enable("kotlin_language_server")
 vim.lsp.enable("ts_ls")

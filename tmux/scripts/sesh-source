@@ -1,0 +1,9 @@
+#!/bin/sh
+
+export PATH="/opt/homebrew/bin:$HOME/.local/share/mise/shims:$PATH"
+
+sesh list --icons
+
+[ -d "$HOME/work" ] && fd -H -d 1 -t d -E .Trash . "$HOME/work"
+[ -d "$HOME/personal" ] && fd -H -d 1 -t d -E .Trash . "$HOME/personal"
+[ -d "$HOME/projects" ] && fd -H -d 1 -t d -E .Trash . "$HOME/projects"

@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -u
+
+export PATH="/opt/homebrew/bin:$HOME/.local/share/mise/shims:$HOME/.local/share/mise/installs/zoxide/0.9.9:$PATH"
+
+default_source() {
+  sesh list --icons
+  [ -d "$HOME/work" ] && fd -H -d 1 -t d -E .Trash . "$HOME/work"
+  [ -d "$HOME/personal" ] && fd -H -d 1 -t d -E .Trash . "$HOME/personal"
+  [ -d "$HOME/projects" ] && fd -H -d 1 -t d -E .Trash . "$HOME/projects"
+}
+
+fd_source() {
+  [ -d "$HOME/work" ] && fd -H -d 1 -t d -E .Trash . "$HOME/work"
+  [ -d "$HOME/personal" ] && fd -H -d 1 -t d -E .Trash . "$HOME/personal"
+  [ -d "$HOME/projects" ] && fd -H -d 1 -t d -E .Trash . "$HOME/projects"
+}
+
+selection="$({
+  default_source
+} | fzf-tmux -p 80%,70% \
+  --no-sort \
+  --ansi \
+  --border-label ' sesh ' \
+  --prompt '⚡  ' \
+  --header '  ^a all ^t tmux ^g configs ^x zoxide ^d tmux kill ^f find' \
+  --bind 'tab:down,btab:up' \
+  --bind "ctrl-a:change-prompt(⚡  )+reload($HOME/dotfiles/tmux/scripts/sesh-source)" \
+  --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
+  --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
+  --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
+  --bind "ctrl-f:change-prompt(🔎  )+reload($HOME/dotfiles/tmux/scripts/sesh-source-fd)" \
+  --bind "ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload($HOME/dotfiles/tmux/scripts/sesh-source)" \
+  --preview-window 'right:55%' \
+  --preview 'sesh preview {}')"
+
+[ -z "$selection" ] && exit 0
+
+# fd outputs full paths (starting with /); sesh list --icons prefixes an icon+space
+case "$selection" in
+  /*) exec sesh connect "$selection" ;;
+  *)  exec sesh connect "$(echo "$selection" | sed 's/^[^ ]* //')" ;;
+esac

@@ -8,6 +8,7 @@ tap "nikitabobko/tap"
 
 # Core (not available in mise)
 brew "bash"    # macOS ships bash 3.2 from 2007
+brew "fzf"
 brew "git"
 brew "zsh"
 brew "stow"
@@ -20,6 +21,7 @@ brew "jdtls"    # not in mise registry
 brew "kotlin-language-server" # not in mise registry
 brew "lua-language-server" # not in mise registry
 brew "luarocks" # not in mise registry, needed for SbarLua
+brew "sesh"
 brew "watch"
 
 # GNU tools (replace macOS POSIX versions)

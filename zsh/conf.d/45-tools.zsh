@@ -9,6 +9,9 @@ eval "$(starship init zsh)"
 # Atuin shell history
 eval "$(atuin init zsh)"
 
+# Zoxide smart cd
+eval "$(zoxide init zsh)"
+
 # kubectl completions (lazy-loaded on first use)
 if command -v kubectl &>/dev/null; then
   kubectl() {

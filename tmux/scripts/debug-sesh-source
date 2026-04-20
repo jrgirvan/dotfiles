@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+log_file="${TMPDIR:-/tmp}/debug-sesh-source.log"
+
+{
+  echo "=== $(date) ==="
+  echo "PWD=$PWD"
+  echo "PATH=$PATH"
+  echo "--- source ---"
+  { sesh list --icons; [[ -d ~/work ]] && fd -H -d 1 -t d -E .Trash . ~/work; [[ -d ~/personal ]] && fd -H -d 1 -t d -E .Trash . ~/personal; [[ -d ~/projects ]] && fd -H -d 1 -t d -E .Trash . ~/projects; }
+} > "$log_file" 2>&1
