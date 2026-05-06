@@ -13,6 +13,7 @@ sudo pacman -S --needed --noconfirm \
   base-devel \
   git \
   graphviz \
+  lua-language-server \
   luarocks \
   stow \
   tree \
@@ -30,6 +31,11 @@ if ! command -v yay &>/dev/null; then
 else
   echo "yay already installed"
 fi
+
+# AUR packages (not in official repos)
+yay -S --needed --noconfirm \
+  lazyjj \
+  sesh
 
 # Desktop environment (Hyprland stack)
 yay -S --needed --noconfirm \
