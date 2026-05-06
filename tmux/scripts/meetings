@@ -1,0 +1,206 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CALENDAR="john.girvan@xero.com"
+NOW_EPOCH=$(date +%s)
+TODAY=$(date '+%Y-%m-%d')
+PAD="  "
+MAX_WIDTH=120
+
+# ── Block digit font (5 wide x 5 high) ─────────────────
+B="█"
+S=" "
+
+declare -a FONT
+FONT[0]="${B}${B}${B}${B}${B}|${B}${S}${S}${S}${B}|${B}${S}${S}${S}${B}|${B}${S}${S}${S}${B}|${B}${B}${B}${B}${B}"
+FONT[1]="${S}${S}${B}${S}${S}|${S}${S}${B}${S}${S}|${S}${S}${B}${S}${S}|${S}${S}${B}${S}${S}|${S}${S}${B}${S}${S}"
+FONT[2]="${B}${B}${B}${B}${B}|${S}${S}${S}${S}${B}|${B}${B}${B}${B}${B}|${B}${S}${S}${S}${S}|${B}${B}${B}${B}${B}"
+FONT[3]="${B}${B}${B}${B}${B}|${S}${S}${S}${S}${B}|${B}${B}${B}${B}${B}|${S}${S}${S}${S}${B}|${B}${B}${B}${B}${B}"
+FONT[4]="${B}${S}${S}${S}${B}|${B}${S}${S}${S}${B}|${B}${B}${B}${B}${B}|${S}${S}${S}${S}${B}|${S}${S}${S}${S}${B}"
+FONT[5]="${B}${B}${B}${B}${B}|${B}${S}${S}${S}${S}|${B}${B}${B}${B}${B}|${S}${S}${S}${S}${B}|${B}${B}${B}${B}${B}"
+FONT[6]="${B}${B}${B}${B}${B}|${B}${S}${S}${S}${S}|${B}${B}${B}${B}${B}|${B}${S}${S}${S}${B}|${B}${B}${B}${B}${B}"
+FONT[7]="${B}${B}${B}${B}${B}|${S}${S}${S}${S}${B}|${S}${S}${S}${S}${B}|${S}${S}${S}${S}${B}|${S}${S}${S}${S}${B}"
+FONT[8]="${B}${B}${B}${B}${B}|${B}${S}${S}${S}${B}|${B}${B}${B}${B}${B}|${B}${S}${S}${S}${B}|${B}${B}${B}${B}${B}"
+FONT[9]="${B}${B}${B}${B}${B}|${B}${S}${S}${S}${B}|${B}${B}${B}${B}${B}|${S}${S}${S}${S}${B}|${B}${B}${B}${B}${B}"
+FONT[10]="${S}|${B}|${S}|${B}|${S}" # colon (1 wide)
+
+# ── Rendering ───────────────────────────────────────────
+truncate_line() {
+  local line="$1"
+  local max="$2"
+  if (( ${#line} > max )); then
+    printf '%s…' "${line:0:$((max - 1))}"
+  else
+    printf '%s' "$line"
+  fi
+}
+
+render_time() {
+  local time_str="$1"
+  local h1="${time_str:0:1}" h2="${time_str:1:1}"
+  local m1="${time_str:3:1}" m2="${time_str:4:1}"
+  local digits=("$h1" "$h2" "10" "$m1" "$m2")
+  local gap="  "
+
+  for row in 0 1 2 3 4; do
+    local line=""
+    for d in "${digits[@]}"; do
+      local glyph="${FONT[$d]}"
+      local r="$glyph"
+      for (( i=0; i<row; i++ )); do
+        r="${r#*|}"
+      done
+      r="${r%%|*}"
+      line+="${r}${gap}"
+    done
+    line="${line%${gap}}"
+    printf '%s\n' "${PAD}${line}${PAD}"
+  done
+}
+
+# ── Helpers ─────────────────────────────────────────────
+time_to_epoch() {
+  local h m
+  h=$((10#${1%%:*}))
+  m=$((10#${1##*:}))
+  /bin/date -j -f "%Y-%m-%d %H:%M" \
+    "$TODAY $(printf '%02d:%02d' "$h" "$m")" +%s 2>/dev/null
+}
+
+is_finished() {
+  local end_epoch
+  end_epoch=$(time_to_epoch "$1") || return 1
+  (( end_epoch <= NOW_EPOCH ))
+}
+
+color_for_minutes() {
+  local mins="$1"
+  # green(32) → yellow(33) → red(31) based on minutes until start
+  if (( mins <= 0 )); then
+    printf '\033[1;31m'   # bold red - happening now
+  elif (( mins <= 5 )); then
+    printf '\033[0;31m'   # red
+  elif (( mins <= 15 )); then
+    printf '\033[0;33m'   # yellow
+  else
+    printf '\033[0;32m'   # green
+  fi
+}
+
+relative_time() {
+  local start_epoch diff hours mins color reset
+  start_epoch=$(time_to_epoch "$1") || return 1
+  reset=$'\033[0m'
+
+  diff=$(( (start_epoch - NOW_EPOCH) / 60 ))
+  color=$(color_for_minutes "$diff")
+
+  if (( diff > 60 )); then
+    hours=$((diff / 60)); mins=$((diff % 60))
+    if (( mins == 0 )); then printf "%sin %dh%s" "$color" "$hours" "$reset"
+    else printf "%sin %dh %dm%s" "$color" "$hours" "$mins" "$reset"; fi
+  elif (( diff > 0 )); then
+    printf "%sin %dm%s" "$color" "$diff" "$reset"
+  else
+    printf "%snow%s" "$color" "$reset"
+  fi
+}
+
+is_boilerplate() {
+  local line="$1"
+  [[ "$line" =~ -::~:~::~:~ ]] && return 0
+  [[ "$line" =~ "Join with Google Meet" ]] && return 0
+  [[ "$line" =~ "Or dial:" ]] && return 0
+  [[ "$line" =~ "More phone numbers:" ]] && return 0
+  [[ "$line" =~ "Learn more about Meet" ]] && return 0
+  [[ "$line" =~ "Please do not edit" ]] && return 0
+  [[ "$line" =~ "Microsoft Teams" ]] && return 0
+  [[ "$line" =~ tel\.meet ]] && return 0
+  [[ "$line" =~ meet\.google\.com ]] && return 0
+  [[ "$line" =~ teams\.microsoft\.com ]] && return 0
+  [[ "$line" =~ aka\.ms/ ]] && return 0
+  [[ "$line" =~ "Meeting ID:" ]] && return 0
+  [[ "$line" =~ "Passcode:" ]] && return 0
+  [[ "$line" =~ "For organizers:" ]] && return 0
+  [[ "$line" =~ "Meeting options" ]] && return 0
+  [[ "$line" =~ ^[[:space:]]*[_]{10,}[[:space:]]*$ ]] && return 0
+  [[ "$line" =~ ^[[:space:]]*"Join:"[[:space:]] ]] && return 0
+  return 1
+}
+
+clean_html() {
+  sed -E \
+    -e 's|</li>|\
+|g' \
+    -e 's|<li[^>]*>|  - |g' \
+    -e 's|<br[^>]*>|\
+|g' \
+    -e 's|</?[^>]*>||g'
+}
+
+# ── Generate content ────────────────────────────────────
+{
+  printf '\n'
+  render_time "$(date '+%H:%M')"
+  printf '\n'
+  printf '%s%s%s\n' "$PAD" "$(date '+%A, %B %-d')" "$PAD"
+  printf '\n'
+
+  output=$(icalBuddy -ic "$CALENDAR" \
+    -tf "%H:%M" \
+    -df "" \
+    -iep "title,datetime,location,notes" \
+    -po "datetime,title,location,notes" \
+    -nc \
+    -nrd \
+    -npn "" \
+    -b "" \
+    eventsToday 2>/dev/null || true)
+
+  if [[ -z "${output// /}" ]]; then
+    printf '%sNo meetings today.%s\n' "$PAD" "$PAD"
+  else
+    in_boilerplate=0
+    skip_event=0
+
+    while IFS= read -r line; do
+      if [[ "$line" =~ -::~:~::~:~ ]]; then
+        in_boilerplate=$(( 1 - in_boilerplate ))
+        continue
+      fi
+      (( in_boilerplate )) && continue
+      is_boilerplate "$line" && continue
+
+      if [[ "$line" =~ ^([0-9]{2}:[0-9]{2})\ -\ ([0-9]{2}:[0-9]{2})$ ]]; then
+        local_start="${BASH_REMATCH[1]}"
+        local_end="${BASH_REMATCH[2]}"
+
+        # Skip meetings that have already finished
+        if is_finished "$local_end"; then
+          skip_event=1
+          continue
+        fi
+        skip_event=0
+
+        printf '\n'
+        rel=$(relative_time "$local_start" 2>/dev/null || true)
+        if [[ -n "$rel" ]]; then
+          printf '%s━ %s  %s%s\n' "$PAD" "$rel" "$line" "$PAD"
+        else
+          printf '%s━ %s%s\n' "$PAD" "$line" "$PAD"
+        fi
+      elif (( skip_event )); then
+        continue
+      elif [[ "$line" =~ ^[[:space:]] ]]; then
+        while IFS= read -r cleaned; do
+          [[ -z "${cleaned// /}" ]] && continue
+          cleaned="${cleaned#"${cleaned%%[![:space:]]*}"}"
+          cleaned=$(truncate_line "$cleaned" $((MAX_WIDTH - 6)))
+          printf '%s  %s%s\n' "$PAD" "$cleaned" "$PAD"
+        done < <(printf '%s\n' "$line" | clean_html)
+      fi
+    done <<< "$output"
+  fi
+
+  printf '\n'
+}

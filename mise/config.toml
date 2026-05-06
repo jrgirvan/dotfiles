@@ -4,10 +4,13 @@ bun = "latest"
 go = "latest"
 java = "21"
 node = "latest"
-python = "latest"
+python = "3.12"
+uv = "latest"
 rust = "latest"
 zig = "latest"
 dotnet = "10.0.201"
+
+cmake = "latest"    # needed for some Rust build scripts (e.g. rdkafka-sys cmake-build)
 
 # CLI tools
 atuin = "latest"
@@ -21,22 +24,30 @@ jq = "latest"
 lazygit = "latest"
 lua = "latest"
 neovim = "latest"
+"npm:hunkdiff" = "latest"
+"npm:typescript" = "latest"
+"npm:typescript-language-server" = "latest"
+"npm:neovim" = "latest"
+"npm:prettier" = "latest"
+"npm:@fsouza/prettierd" = "latest"
 ripgrep = "latest"
 rust-analyzer = "latest"
 sops = "latest"
 starship = "latest"
 stern = "latest"
 terraform-ls = "latest"
+tree-sitter = "latest"
+"github:agavra/tuicr" = "latest"
 ty = "latest"
 zoxide = "latest"
-"npm:typescript" = "latest"
-"npm:typescript-language-server" = "latest"
 tmux = "latest"
 yq = "latest"
 zls = "latest"
 
 # Go tools
+"go:golang.org/x/tools/gopls"= "latest"
 "go:github.com/nametake/golangci-lint-langserver" = "latest"
+"aqua:rhysd/actionlint" = "1.7.12"
 
 [settings]
 legacy_version_file = true

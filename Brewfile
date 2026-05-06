@@ -31,6 +31,7 @@ brew "gnu-tar"
 brew "gawk"
 brew "findutils"
 brew "grep"
+brew "patchutils"
 
 # Container & Docker
 brew "docker-compose"
@@ -51,7 +52,6 @@ brew "switchaudio-osx"
 # Casks (GUI apps)
 cask "nikitabobko/tap/aerospace"
 cask "obsidian"
-cask "vmware-fusion"
 cask "dbeaver-community"
 cask "background-music"
 cask "docker-desktop"

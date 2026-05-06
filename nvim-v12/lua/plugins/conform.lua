@@ -9,7 +9,6 @@ require("conform").setup({
 		lua = { "stylua" },
 		java = { "google-java-format" },
 		javascript = { "prettierd", "prettier", stop_after_first = true },
-		nix = { "nixfmt" },
 	},
 	default_format_opts = {
 		lsp_format = "fallback",

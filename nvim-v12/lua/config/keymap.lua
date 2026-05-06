@@ -37,6 +37,28 @@ vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("t", "<C-c>", "<C-\\><C-n>")
 
+vim.keymap.set("n", "<leader>kd", function()
+  local log_path = "/tmp/nvim-keylog.txt"
+  vim.fn.writefile({}, log_path)
+
+  if vim.g.ctrl_c_keylog_ns then
+    vim.on_key(nil, vim.g.ctrl_c_keylog_ns)
+    vim.g.ctrl_c_keylog_ns = nil
+    print("Ctrl-C key logger stopped: " .. log_path)
+    return
+  end
+
+  local ns = vim.api.nvim_create_namespace("ctrl_c_keylog")
+  vim.g.ctrl_c_keylog_ns = ns
+
+  vim.on_key(function(key)
+    local line = string.format("mode=%s key=%q", vim.fn.mode(1), key)
+    vim.fn.writefile({ line }, log_path, "a")
+  end, ns)
+
+  print("Ctrl-C key logger started: " .. log_path)
+end, { desc = "Toggle Ctrl-C key logger" })
+
 vim.keymap.set("n", "Q", "<nop>")
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 --vim.keymap.set("n", "ff", vim.lsp.buf.format)

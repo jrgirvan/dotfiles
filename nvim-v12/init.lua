@@ -4,6 +4,7 @@ require("config.keymap")
 require("config.autocmd")
 require("config.lsp")
 require("plugins.pack")
+require("config.jj_signs").setup()
 
 --[[
 require("config.lazy")

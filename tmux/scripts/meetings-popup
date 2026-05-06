@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Render meetings in a read-only tmux popup, press q or esc to close
+output=$("$HOME/dotfiles/tmux/scripts/meetings" 2>/dev/null)
+clear
+printf '%s\n' "$output"
+
+# Wait for q or Escape
+while true; do
+  IFS= read -rsn1 key
+  case "$key" in
+    q|Q) break ;;
+    $'\x1b') break ;;
+  esac
+done

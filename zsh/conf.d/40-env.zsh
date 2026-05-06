@@ -14,10 +14,5 @@ export KUBE_EDITOR=nvim
 # Misc
 export LESS='-R'
 
-# mise: use gh token to avoid GitHub API rate limits for aqua-backed tools
-if command -v gh &>/dev/null && gh auth status &>/dev/null 2>&1; then
-  export MISE_GITHUB_TOKEN="$(gh auth token)"
-fi
-
 # Dotnet
 export DOTNET_ROOT=$HOME/.dotnet

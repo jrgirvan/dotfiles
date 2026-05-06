@@ -19,6 +19,10 @@ vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
+-- Resolve terminal keycodes quickly so control sequences like <C-c> don't stay tentative.
+--vim.opt.ttimeout = true
+--vim.opt.ttimeoutlen = 10
+
 -- Preview substitutions
 vim.opt.inccommand = "split"
 
