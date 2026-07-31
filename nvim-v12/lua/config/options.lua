@@ -62,11 +62,11 @@ vim.opt.incsearch = true
 vim.opt.termguicolors = true
 
 vim.opt.scrolloff = 8
-vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
 -- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 -- delays and poor user experience.
 vim.opt.updatetime = 50
 
-vim.opt.winborder = "rounded"
+-- Completion behaviour (used by the native LSP completion in config/lsp.lua)
+vim.opt.completeopt = { "menu", "menuone", "noinsert", "fuzzy", "popup" }

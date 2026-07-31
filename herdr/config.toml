@@ -1,0 +1,174 @@
+# herdr config - translated from tmux/tmux.conf
+# Docs: https://herdr.dev/docs/configuration/
+
+# ---------------------------------------------------------------------------
+# Terminal
+# ---------------------------------------------------------------------------
+# shell_mode = "auto" gives login shells on macOS, which is what tmux was
+# effectively doing for PATH setup (see the mise/zoxide PATH line in tmux.conf).
+[terminal]
+shell_mode = "auto"
+new_cwd = "follow"        # new panes inherit cwd, matching tmux muscle memory
+
+# ---------------------------------------------------------------------------
+# Session state
+# ---------------------------------------------------------------------------
+# Stands in for tmux-resurrect + tmux-continuum (@continuum-restore 'on').
+[session]
+resume_agents_on_restore = true
+
+# ---------------------------------------------------------------------------
+# Theme
+# ---------------------------------------------------------------------------
+# catppuccin mocha, with the deuteranopia overrides from tmux.conf.
+[theme]
+name = "catppuccin"
+
+[theme.custom]
+green  = "#90e085"
+blue   = "#7588db"
+red    = "#d46570"
+yellow = "#e8dfb8"
+accent = "#b4befe"        # thm_lavender - was the active pane border colour
+
+# ---------------------------------------------------------------------------
+# UI
+# ---------------------------------------------------------------------------
+# tmux had `set -g status-position top`.
+[ui]
+tab_bar_position = "top"
+
+# Sidebar layout. The tab bar itself is fixed chrome - herdr has no equivalent
+# of catppuccin's rounded window-status style, separators or format strings -
+# so the sidebar is the only place layout can be influenced.
+#
+# `num`, `dir` and `app` are NOT built-in tokens; herdr has none for a number,
+# a directory or a process name. They are custom `$` tokens fed by
+# herdr/scripts/herdr-status, which must be running. Without it these render
+# empty. Built-in tokens here: workspace, state_icon, branch, git_status.
+[ui.sidebar.spaces]
+row_gap = 0
+rows = [
+  ["state_icon", "$num", "workspace"],
+  ["branch", "git_status"],
+]
+
+# The agents sidebar takes a different token set: tab/agent/state_text are
+# valid here but not in spaces, and branch/git_status are rejected here.
+[ui.sidebar.agents]
+row_gap = 0
+rows = [
+  ["state_icon", "$app", "state_text"],
+  ["$dir"],
+  ["workspace", "tab"],
+]
+
+# ---------------------------------------------------------------------------
+# Keybindings
+# ---------------------------------------------------------------------------
+[keys]
+prefix = "ctrl+a"                     # set -g prefix C-a
+
+reload_config = "prefix+r"            # bind r source-file ...
+
+# Native picker over already-open workspaces (tmux's choose-tree).
+# prefix+f is the wider one: open workspaces *and* directories on disk.
+workspace_picker = "prefix+w"
+
+# Splits. tmux: bind -r v split-window -h / bind -r s split-window -v
+# tmux's -h means "side by side", which herdr calls split_vertical.
+split_vertical   = "prefix+v"
+split_horizontal = "prefix+s"
+
+# vim-like pane switching - bind -r h/j/k/l select-pane
+focus_pane_left  = "prefix+h"
+focus_pane_down  = "prefix+j"
+focus_pane_up    = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# Navigate mode: plain keys, no prefix. focus_pane_* above moves the *focus*
+# between terminal panes; navigate_* drives the sidebar/navigation surface.
+# The workspace list is vertical, so it only has up/down.
+navigate_workspace_up   = "k"
+navigate_workspace_down = "j"
+
+# Panes also accept navigate-mode keys, but j/k are spent on the workspace
+# list above (herdr disables the loser of a collision), so only h/l are bound
+# here. Pane movement proper lives on prefix+h/j/k/l.
+navigate_pane_left  = "h"
+navigate_pane_right = "l"
+
+# vim-like pane resizing - bind -r C-h/C-j/C-k/C-l resize-pane
+# herdr uses a modal resize mode rather than repeat-bindings; enter it with
+# prefix+ctrl+r, then h/j/k/l, then esc.
+resize_mode = "prefix+ctrl+r"
+
+# bind -r ^ last-window
+last_pane = "prefix+backtick"
+
+# Workspace switching. herdr has no last-used workspace toggle (no
+# last_workspace action, and the API snapshot tracks only current focus - no
+# history), so these are positional: repeated presses walk the workspace list
+# rather than flipping between two.
+#
+# ctrl+arrows: tmux unbound these (unbind C-Up/Down/Left/Right) and nothing
+# else claims them - ghostty only rewrites super+arrow, and nvim window
+# navigation is done with ctrl+w h/j/k/l. Note the spelling is "ctrl+up",
+# not ghostty's "ctrl+arrow_up", which herdr rejects.
+# NOT ctrl+h/ctrl+l: those would shadow harpoon slots 1 and 4, LSP
+# signature_help and copilot accept_word in nvim.
+#
+# The workspace list is vertical (herdr only offers up/down for it), so
+# up/down here and left/right for tabs, matching how each is laid out.
+previous_workspace = "ctrl+up"
+next_workspace     = "ctrl+down"
+
+# Tabs (tmux windows)
+new_tab      = "prefix+c"
+rename_tab   = "prefix+comma"
+close_tab    = "prefix+ampersand"
+
+# Tabs run horizontally, so left/right. prefix+n/p kept as the tmux-style
+# alternative - herdr allows several shortcuts per action.
+next_tab     = ["prefix+n", "ctrl+right"]
+previous_tab = ["prefix+p", "ctrl+left"]
+
+# bind-key -n C-1..C-9 select-window -t N
+#
+# ghostty/config rewrites ctrl+<digit> to "\x01<digit>" (prefix, then digit),
+# because terminals can't encode ctrl+<digit> natively. So pressing ctrl+1
+# actually arrives as prefix+1 - that's the binding that has to exist.
+# ctrl+1..9 is kept as a second shortcut for terminals that do send it.
+# Note: tmux also bound C-0; herdr's indexed syntax only covers 1..9.
+switch_tab = ["prefix+1..9", "ctrl+1..9"]
+
+# Copy mode - setw -g mode-keys vi
+copy_mode = "prefix+["
+
+zoom       = "prefix+z"
+close_pane = "prefix+x"
+detach     = "prefix+d"
+
+# ---------------------------------------------------------------------------
+# Custom command bindings (tmux display-popup equivalents)
+# ---------------------------------------------------------------------------
+
+# herdr equivalent of the tmux sesh-picker: focuses an open workspace, or
+# creates a new one from a directory. The tmux script can't be reused - it
+# calls `sesh connect`, which builds tmux sessions.
+[[keys.command]]
+key = "prefix+f"
+type = "popup"
+command = "$HOME/dotfiles/herdr/scripts/herdr-picker"
+description = "workspace picker"
+width = "80%"
+height = "70%"
+
+# bind-key g display-popup -E -w 80% -h 80% ... meetings-popup
+[[keys.command]]
+key = "prefix+g"
+type = "popup"
+command = "$HOME/dotfiles/tmux/scripts/meetings-popup"
+description = "meetings"
+width = "80%"
+height = "80%"

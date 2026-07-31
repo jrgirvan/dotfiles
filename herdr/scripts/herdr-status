@@ -1,0 +1,238 @@
+#!/usr/bin/env python3
+"""Feed herdr's sidebar the things it has no native token for.
+
+herdr's sidebar rows only accept a fixed vocabulary (workspace, state_icon,
+branch, git_status, ...). There is no token for a number, a directory or the
+running process. Custom `$name` tokens fill that gap: they render whatever a
+"source" pushes via workspace.report_metadata / pane.report_metadata, which is
+the same mechanism herdr's own agent integrations use.
+
+This daemon subscribes to the socket API and refreshes those tokens whenever
+something changes, so the sidebar shows:
+
+    workspace   ->  $num   (e.g. "1")
+    pane        ->  $dir   (e.g. "~/dotfiles")  and  $app  (e.g. "nvim")
+
+Run it alongside herdr:  herdr-status &
+One-shot refresh (no daemon):  herdr-status --once
+"""
+
+import json
+import os
+import socket
+import subprocess
+import sys
+
+SOURCE = "dotfiles.status"
+# Tokens are display-only and expire, so they must outlive the refresh
+# interval or the sidebar will flicker to empty. 24h is the documented max.
+TTL_MS = 3600_000
+
+SOCKET_PATH = os.environ.get(
+    "HERDR_SOCKET_PATH", os.path.expanduser("~/.config/herdr/herdr.sock")
+)
+
+# Events worth reacting to. Anything that can change a number, a cwd or a
+# foreground process.
+SUBSCRIPTIONS = [
+    "workspace.created",
+    "workspace.closed",
+    "workspace.reordered",
+    "workspace.moved",
+    "workspace.focused",
+    "pane.created",
+    "pane.closed",
+    "pane.focused",
+    "pane.updated",
+    "tab.focused",
+    "tab.created",
+    "tab.closed",
+]
+
+
+class Client:
+    """Line-delimited JSON over the herdr unix socket.
+
+    The server closes the connection after answering one request, so every
+    call dials a fresh socket. Long-lived connections are only for
+    events.subscribe, which keeps streaming after its reply.
+    """
+
+    def __init__(self, path):
+        self.path = path
+        self.n = 0
+
+    def _dial(self):
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        sock.settimeout(10)
+        sock.connect(self.path)
+        return sock
+
+    def call(self, method, params):
+        self.n += 1
+        req = {"id": f"status-{self.n}", "method": method, "params": params}
+        sock = self._dial()
+        try:
+            sock.sendall((json.dumps(req) + "\n").encode())
+            buf = b""
+            while b"\n" not in buf:
+                chunk = sock.recv(65536)
+                if not chunk:
+                    return None
+                buf += chunk
+            return json.loads(buf.split(b"\n", 1)[0].decode())
+        except (OSError, ValueError):
+            return None
+        finally:
+            sock.close()
+
+    # No fire-and-forget variant: a reply must be read before the server
+    # drops the connection, otherwise the write races the close.
+    send = call
+
+    def stream(self, method, params):
+        """Issue a request and keep yielding messages from the same socket."""
+        self.n += 1
+        req = {"id": f"status-{self.n}", "method": method, "params": params}
+        sock = self._dial()
+        sock.settimeout(None)
+        sock.sendall((json.dumps(req) + "\n").encode())
+        buf = b""
+        try:
+            while True:
+                while b"\n" in buf:
+                    raw, buf = buf.split(b"\n", 1)
+                    raw = raw.strip()
+                    if raw:
+                        try:
+                            yield json.loads(raw)
+                        except ValueError:
+                            pass
+                chunk = sock.recv(65536)
+                if not chunk:
+                    return
+                buf += chunk
+        finally:
+            sock.close()
+
+    def close(self):
+        pass
+
+
+def shorten(path):
+    """/Users/me/work/x -> ~/work/x, matching tmux's #{b:pane_current_path} feel."""
+    home = os.path.expanduser("~")
+    if path == home:
+        return "~"
+    if path.startswith(home + "/"):
+        return "~" + path[len(home):]
+    return path
+
+
+# Wrappers that are never the interesting answer - if the leaf process is one
+# of these, keep looking up the list for the thing the user actually ran.
+_UNINTERESTING = {
+    "sh", "bash", "zsh", "fish", "nu", "login", "env", "caffeinate",
+    "uv", "uvx", "npx", "mise", "python", "python3", "node",
+}
+
+
+def foreground_app(client, pane_id):
+    """Best-effort name of what's running in a pane.
+
+    process_info returns foreground_processes[] with argv0/name/cmdline.
+    argv0 is the reliable field: `name` can hold something unhelpful (the
+    claude CLI reports its version there, e.g. "2.1.233"). The list runs
+    leaf-first, so the last entry is usually what was typed.
+    """
+    resp = client.call("pane.process_info", {"pane_id": pane_id})
+    if not resp or "result" not in resp:
+        return None
+    procs = resp["result"].get("process_info", {}).get("foreground_processes", [])
+    if not procs:
+        return None
+
+    names = []
+    for p in procs:
+        n = p.get("argv0") or p.get("name") or ""
+        if n:
+            names.append(os.path.basename(n))
+    if not names:
+        return None
+
+    for n in reversed(names):
+        if n.lower() not in _UNINTERESTING:
+            return n
+    # Everything was a shell or wrapper: the shell itself is the honest answer.
+    return names[-1]
+
+
+def refresh(client):
+    """Push current numbers, directories and app names as tokens."""
+    snap = client.call("session.snapshot", {})
+    if not snap or "result" not in snap:
+        return
+    snapshot = snap["result"].get("snapshot", {})
+
+    for ws in snapshot.get("workspaces", []):
+        wid = ws.get("workspace_id")
+        if not wid:
+            continue
+        client.send(
+            "workspace.report_metadata",
+            {
+                "workspace_id": wid,
+                "source": SOURCE,
+                "tokens": {"num": str(ws.get("number", ""))},
+                "ttl_ms": TTL_MS,
+            },
+        )
+
+    for pane in snapshot.get("panes", []):
+        pid = pane.get("pane_id")
+        if not pid:
+            continue
+        cwd = pane.get("foreground_cwd") or pane.get("cwd") or ""
+        tokens = {"dir": shorten(cwd) if cwd else None}
+        app = foreground_app(client, pid)
+        tokens["app"] = app
+        client.send(
+            "pane.report_metadata",
+            {
+                "pane_id": pid,
+                "source": SOURCE,
+                "tokens": tokens,
+                "ttl_ms": TTL_MS,
+            },
+        )
+
+
+def main():
+    once = "--once" in sys.argv
+    try:
+        client = Client(SOCKET_PATH)
+    except OSError as exc:
+        print(f"herdr-status: cannot reach {SOCKET_PATH}: {exc}", file=sys.stderr)
+        return 1
+
+    refresh(client)
+    if once:
+        return 0
+
+    # Any subscribed event means something moved; re-push the affected state.
+    # Refreshing everything is cheap next to tracking deltas, and it is
+    # self-healing if an event is missed.
+    events = client.stream(
+        "events.subscribe",
+        {"subscriptions": [{"type": t} for t in SUBSCRIPTIONS]},
+    )
+    for msg in events:
+        # Skip the subscribe acknowledgement; react to actual events.
+        if msg.get("result") is not None and "event" not in msg:
+            continue
+        refresh(client)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -55,5 +55,6 @@ cask "obsidian"
 cask "dbeaver-community"
 cask "background-music"
 cask "docker-desktop"
+cask "macshot"
 
 cask "font-jetbrains-mono-nerd-font"

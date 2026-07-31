@@ -114,11 +114,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
 		vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
-		vim.keymap.set("n", "[d", vim.diagnostic.goto_next, opts)
-		vim.keymap.set("n", "]d", vim.diagnostic.goto_prev, opts)
+		-- ]d/[d diagnostic navigation is built in since 0.11
 
 		if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_completion) then
-			vim.opt.completeopt = { "menu", "menuone", "noinsert", "fuzzy", "popup" }
 			vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
 			vim.keymap.set("i", "<C-Space>", function()
 				vim.lsp.completion.get()

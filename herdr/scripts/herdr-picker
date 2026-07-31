@@ -1,0 +1,141 @@
+#!/bin/sh
+# herdr workspace picker - the herdr equivalent of tmux/scripts/sesh-picker.
+#
+# Open workspaces are listed first and focus on selection; everything else is a
+# directory that becomes a new workspace. herdr has no native directory list or
+# favourites, so candidates come from zoxide (frecency), sesh.toml (named
+# favourites) and fd (discovery). sesh is only ever used to *list*, never to
+# connect - `sesh connect` would create a tmux session.
+
+set -u
+
+export PATH="/opt/homebrew/bin:$HOME/.local/share/mise/shims:$PATH"
+
+HERDR="${HERDR_BIN:-herdr}"
+
+# --- sources ----------------------------------------------------------------
+
+# Open herdr workspaces, marked so the selection handler can spot them.
+# `workspace list` has no cwd, so the path comes from each workspace's root
+# pane; that real path is what lets an open workspace dedupe against the
+# directory sources below. Emitted as: ● label <TAB> workspace_id <TAB> cwd
+open_workspaces() {
+  ws_json="$("$HERDR" workspace list 2>/dev/null)" || return 0
+  pane_json="$("$HERDR" pane list 2>/dev/null)" || return 0
+  printf '%s\n%s' "$ws_json" "$pane_json" | python3 -c '
+import json, sys
+raw = sys.stdin.read().splitlines()
+try:
+    ws = json.loads(raw[0])["result"]["workspaces"]
+    panes = json.loads(raw[1])["result"]["panes"]
+except Exception:
+    sys.exit(0)
+# First pane seen for a workspace is its root; good enough for a cwd.
+cwd = {}
+for p in panes:
+    cwd.setdefault(p.get("workspace_id"), p.get("cwd", ""))
+for w in ws:
+    wid = w.get("workspace_id", "")
+    print("\033[32m●\033[0m {}\t{}\t{}".format(
+        w.get("label", "?"), wid, cwd.get(wid, "")))
+' 2>/dev/null
+}
+
+# sesh.toml named entries, emitted as paths so they dedupe against zoxide/fd.
+favourites() {
+  sesh list -c --json 2>/dev/null | python3 -c '
+import json, sys, os
+try:
+    for s in json.load(sys.stdin):
+        p = s.get("Path", "")
+        if p:
+            print(os.path.expanduser(p))
+except Exception:
+    pass
+' 2>/dev/null
+}
+
+recent() {
+  zoxide query -l 2>/dev/null
+}
+
+discover() {
+  for d in "$HOME/work" "$HOME/personal" "$HOME/projects"; do
+    [ -d "$d" ] && fd -H -d 1 -t d -E .Trash . "$d"
+  done
+}
+
+# Open workspaces first, then favourites, then frecency, then discovery.
+# Dedupe on the resolved path (trailing slash and ~ normalised) so the same
+# project arriving from two sources only shows once, earliest source winning.
+# Open workspaces are keyed by label instead, since `workspace list` exposes
+# no cwd - a basename collision is the best match available.
+default_source() {
+  {
+    open_workspaces
+    favourites
+    recent
+    discover
+  } | awk -F'\t' -v home="$HOME" '
+    {
+      # Open workspaces carry their real cwd in field 3; directories are
+      # a bare path in field 1. Either way we dedupe on the full path, since
+      # distinct projects routinely share a basename
+      # (datasync-1/producer vs datasync-2/producer).
+      key = (NF > 2 && $3 != "") ? $3 : $1
+      if (key ~ /^~/) key = home substr(key, 2)
+      sub(/\/+$/, "", key)
+      if (key != "" && !seen[key]++) print
+    }'
+}
+
+# Re-entrant mode: fzf's ctrl-* reload bindings call this script back.
+if [ "${1:-}" = "--source" ]; then
+  case "${2:-all}" in
+    open)    open_workspaces ;;
+    configs) favourites ;;
+    zoxide)  recent ;;
+    find)    discover ;;
+    *)       default_source ;;
+  esac
+  exit 0
+fi
+
+selection="$(default_source | fzf \
+  --no-sort \
+  --ansi \
+  --delimiter '\t' \
+  --with-nth 1 \
+  --border-label ' herdr ' \
+  --prompt '⚡  ' \
+  --header '  ^a all ^w open ^g configs ^x zoxide ^f find' \
+  --bind 'tab:down,btab:up' \
+  --bind "ctrl-a:change-prompt(⚡  )+reload($0 --source all)" \
+  --bind "ctrl-w:change-prompt(🪟  )+reload($0 --source open)" \
+  --bind "ctrl-g:change-prompt(⚙️  )+reload($0 --source configs)" \
+  --bind "ctrl-x:change-prompt(📁  )+reload($0 --source zoxide)" \
+  --bind "ctrl-f:change-prompt(🔎  )+reload($0 --source find)" \
+  --preview-window 'right:55%' \
+  --preview 'p={3}; [ -z "$p" ] && p={1}; eza -la --icons --group-directories-first "$p" 2>/dev/null || ls -la "$p" 2>/dev/null')"
+
+[ -z "$selection" ] && exit 0
+
+# --- selection handling -----------------------------------------------------
+
+# An open workspace carries a tab-separated workspace_id; focus it.
+ws_id="$(printf '%s' "$selection" | cut -s -f2)"
+if [ -n "$ws_id" ]; then
+  exec "$HERDR" workspace focus "$ws_id"
+fi
+
+# Every other source emits a path in field 1.
+dir="$(printf '%s' "$selection" | cut -f1)"
+
+# Expand a leading ~ (zoxide emits them unexpanded).
+case "$dir" in
+  "~"|"~/"*) dir="$HOME${dir#\~}" ;;
+esac
+
+[ -d "$dir" ] || exit 0
+
+exec "$HERDR" workspace create --cwd "$dir" --label "$(basename "$dir")" --focus
